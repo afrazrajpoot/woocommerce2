@@ -1,24 +1,25 @@
 "use client";
 import { useGlobalContext } from "@/context/globalState";
 import { menueData, otherData } from "@/data/data";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Sidebar = () => {
-  const { customerDetails } = useGlobalContext();
+  const session = useSession();
+  const { customerDetails, logout } = useGlobalContext();
   const navigate = useRouter();
 
-  // function handleLogout() {
-  //   // localStorage.removeItem("user");
-  //   signOut("google");
-  //   navigate.push("/");
-  // }
   function handleLogout() {
-    signOut("google");
+    if (session.data) {
+      signOut("google");
+      return;
+    }
+    logout();
     navigate.push("/");
   }
+
   return (
     <aside className="fixed  top-[3vw] hidden lg:block ">
       <div className="flex items-start gap-[0.4vw] bg-white  border-[1px] border-[#F1F5F9] w-full max-w-[20vw] lg:max-w-[17vw] ml-[8vw] sm:w-[45vw]  px-[1vw] py-[3vw]">
@@ -83,9 +84,16 @@ const Sidebar = () => {
                 </Link>
               );
             })}
-            <button className="bg-red-400" onClick={handleLogout}>
-              logout
-            </button>
+            <article className="flex gap-[1vw]">
+              <figure>
+                <img src="/img/logoutIcon.png" alt="logout icon" />
+              </figure>
+              <div>
+                <button className="text-red-500" onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            </article>
           </div>
         </div>
       </div>

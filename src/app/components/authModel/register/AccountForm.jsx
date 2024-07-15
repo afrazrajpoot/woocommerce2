@@ -5,6 +5,7 @@ import { accountForm2, accoutForm } from "@/data/data";
 import { Avatar, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -30,6 +31,7 @@ const FormInput = ({ label, type, name, value, onChange }) => {
 
 const AccountForm = () => {
   const session = useSession();
+  const [user, setUser] = useState({});
   // console.log(session.data.user.name, "session data");
   const navigate = useRouter();
   const {
@@ -69,22 +71,44 @@ const AccountForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      if (
-        data?.username != session.data.user.name ||
-        data?.email != session.data.user.email
-      ) {
-        toast.error("No changes made", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        // console.log("error data");
-        return;
+      const sessionUser = session?.data?.user || {};
+      const localUser = user?.data?.user || {};
+
+      if (user) {
+        if (
+          data?.username !== localUser.fullName ||
+          data?.email !== localUser.email
+        ) {
+          toast.error("Add login email and username", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
+      }
+      if (session) {
+        if (
+          data?.username !== sessionUser?.name ||
+          data?.email !== sessionUser?.email
+        ) {
+          toast.error("use google email and name", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
       }
       const requestData = {
         username: customerDetails?.username || data?.username,
@@ -101,26 +125,58 @@ const AccountForm = () => {
       };
 
       if (customerID) {
-        await updateWooCommerceData(`wc/v3/customers`, customerID, requestData);
-        toast.success("updated successfully");
+        const idToUpdate = customerID || userFromLocalStorage;
+        await updateWooCommerceData(`wc/v3/customers`, idToUpdate, requestData);
+        toast.success("Updated successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         navigate.push("/");
       } else {
-        const user = await CreateWooCommerceData("wc/v3/customers", {
+        const newUser = await CreateWooCommerceData("wc/v3/customers", {
           ...requestData,
           password: "12345678", // Set a default password for new customers
         });
-        localStorage.setItem("customerID", JSON.stringify(user?.id));
-        setCustomerID(user?.id);
-        toast.success("created successfully");
+        localStorage.setItem("customerID", JSON.stringify(newUser?.id));
+        setCustomerID(newUser?.id);
+        toast.success("Created successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         navigate.push("/");
       }
       reset();
     } catch (error) {
-      toast.error(error.message);
-      // console.log(error.message, "error creating/updating account");
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
+  useEffect(() => {
+    const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    setUser(userFromLocal);
+  }, []);
+  console.log(user, "user");
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">

@@ -9,30 +9,6 @@ import { useSession } from "next-auth/react";
 
 const Header = () => {
   const session = useSession();
-
-  const CustomButton = styled(Button)({
-    color: "white",
-    borderColor: "white",
-    borderWidth: "1px",
-    textTransform: "capitalize",
-  });
-
-  // useEffect(() => {
-  //   const fetchUserFromLocalStorage = async () => {
-  //     const user = localStorage.getItem("user");
-  //     if (user) {
-  //       try {
-  //         const parsedUser = JSON.parse(user);
-  //         setLoggedUser(parsedUser);
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-  //     }
-  //   };
-
-  //   fetchUserFromLocalStorage();
-  // }, []);
-
   const {
     login,
     setLoginModel,
@@ -41,6 +17,25 @@ const Header = () => {
     setSignupModel,
     showCart,
   } = useGlobalContext();
+
+  const [userName, setUserName] = useState("Guest");
+
+  const CustomButton = styled(Button)({
+    color: "white",
+    borderColor: "white",
+    borderWidth: "1px",
+    textTransform: "capitalize",
+  });
+
+  useEffect(() => {
+    if (session?.data) {
+      setUserName(session?.data?.user?.name || "Guest");
+    } else if (login) {
+      setUserName(login?.data?.user?.fullName || "Guest");
+    } else {
+      setUserName("Guest");
+    }
+  }, [session, login]);
 
   const filteredHeaderData = !login
     ? headerData.filter((item, index) => index !== 3)
@@ -98,11 +93,7 @@ const Header = () => {
                   alt="profile icon"
                   className="sm:w-[2vw] lg:w-[1.5vw]"
                 />
-                {session.data ? (
-                  <span>{session?.data?.user?.name || "Guest"}</span>
-                ) : (
-                  <span>{login?.data?.user?.fullName || "Guest"}</span>
-                )}
+                <span>{userName}</span>
               </div>
             </aside>
           </div>

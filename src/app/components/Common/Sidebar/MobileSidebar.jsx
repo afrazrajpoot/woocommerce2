@@ -9,14 +9,23 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useGlobalContext } from "@/context/globalState";
 import { headerData, menueData, otherData } from "@/data/data";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 export default function MobileSidebar() {
-  const { mobileSidebarOpen, toggleSidebar } = useGlobalContext();
+  const { mobileSidebarOpen, toggleSidebar, customerDetails, logout } =
+    useGlobalContext();
 
   const stopPropagation = (e) => {
     e.stopPropagation();
   };
-
+  function handleLogout() {
+    if (session.data) {
+      signOut("google");
+      return;
+    }
+    logout();
+    navigate.push("/");
+  }
   const DrawerList = (
     <Box
       className="w-full max-w-[90vw]"
@@ -29,9 +38,11 @@ export default function MobileSidebar() {
             <img src="/img/accountAvatar.png" alt="avatar" className="w-full" />
           </figure>
           <div>
-            <p className="text-[4vw] sm:text-[2.5vw] font-bold ">George gika</p>
+            <p className="text-[4vw] sm:text-[2.5vw] font-bold ">
+              {customerDetails?.username}
+            </p>
             <p className="text-[#334155] text-[3vw] sm:text-[2vw] mt-[0.2vw]">
-              neurotic@taildo.com
+              {customerDetails?.email}
             </p>
           </div>
         </section>
@@ -134,6 +145,16 @@ export default function MobileSidebar() {
               </Link>
             );
           })}
+          <article className="flex gap-[1vw]">
+            <figure>
+              <img src="/img/logoutIcon.png" alt="logout icon" />
+            </figure>
+            <div>
+              <button className="text-red-500" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </article>
         </div>
       </div>
     </Box>

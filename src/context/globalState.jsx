@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
   }
 
   function logout() {
-    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setLogin(false);
     setLoginModel(false);
   }
