@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useGlobalContext } from "@/context/globalState";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const Bundles = () => {
   const [bundleData, setBundleData] = React.useState([]);
@@ -75,7 +76,13 @@ const Bundles = () => {
       <div className="w-full grid grid-cols-1 gap-[10vw] sm:gap-[5vw] lg:gap-[2vw] mt-[2vw]">
         <Slider {...settings}>
           {bundleData?.map((bundle, index) => (
+            <Link
+               href={`/product/${bundle.slug}`}
+               key={index}
+               className="w-full px-[1vw]"
+             >
             <BundleCard key={index} {...bundle} />
+            </Link>
           ))}
         </Slider>
       </div>

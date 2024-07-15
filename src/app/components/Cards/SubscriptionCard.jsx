@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { loadScript } from "@paypal/paypal-js";
 
-const SubscriptionCard = ({ title, price, features, paymentMethod }) => {
+const SubscriptionCard = ({ title, price, features, paymentMethod, paypalContainerId }) => {
   const [monthlyPlan, setMonthlyPlan] = useState(true);
 
   return (
@@ -59,7 +58,7 @@ const SubscriptionCard = ({ title, price, features, paymentMethod }) => {
           Select Plan
         </button>
       </article>
-      <div id="paypal-button-container"></div>
+      <div id={paypalContainerId}></div>
     </main>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SubscriptionCard from "../../Cards/SubscriptionCard";
 import { subscriptionPlans } from "@/data/data";
 import { loadScript } from "@paypal/paypal-js";
@@ -6,8 +6,16 @@ import { toast } from "sonner";
 
 const SubscriptionPlans = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
+  useEffect(() => {
+    if (selectedPlan !== null) {
+      const containerId = `paypal-button-container-${selectedPlan.index}`;
+      paymentMethod(selectedPlan.price, containerId);
+    }
+  }, [selectedPlan]);
 
-  const paymentMethod = (price) => {
+  const paymentMethod = (price, containerId) => {
+    // Clear the container before rendering PayPal buttons
+    document.getElementById(containerId).innerHTML = "";
     loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
       (paypal) => {
         paypal
@@ -26,7 +34,7 @@ const SubscriptionPlans = () => {
             },
             onApprove: (data, actions) => {
               // Handle approval
-              toast.success("payment success", {
+              toast.success("Payment success", {
                 position: "top-right",
               });
             },
@@ -35,7 +43,7 @@ const SubscriptionPlans = () => {
             },
             onError: (err) => {
               // Handle errors
-              toast.error("payment error", {
+              toast.error("Payment error", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -47,14 +55,18 @@ const SubscriptionPlans = () => {
               });
             },
           })
-          .render("#paypal-button-container");
+          .render(`#${containerId}`);
       }
     );
   };
-
   const handlePlanSelect = (index, price) => {
-    setSelectedPlan(index);
-    paymentMethod(price);
+    // Clear previous PayPal button container
+    if (selectedPlan !== null) {
+      const prevContainerId = `paypal-button-container-${selectedPlan.index}`;
+      document.getElementById(prevContainerId).innerHTML = "";
+    }
+
+    setSelectedPlan({ index, price });
   };
 
   return (
@@ -72,16 +84,14 @@ const SubscriptionPlans = () => {
             <SubscriptionCard
               {...plan}
               paymentMethod={() => handlePlanSelect(index, plan.price)}
+              paypalContainerId={`paypal-button-container-${index}`}
             />
+            {selectedPlan && selectedPlan.index === index && (
+              <div id={`paypal-button-container-${index}`}></div>
+            )}
           </div>
         ))}
       </section>
-      {selectedPlan !== null && (
-        <div id="paypal-button-container" className=""></div>
-      )}
-      <button className="bg-[#FFFF] mt-[3vw] sm:mt-[9vw] lg:mt-[4vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[4vw] sm:text-[2vw] lg:text-[1vw] hover:text-white hover:shadow-md hover:bg-[#ff387af6] text-[#FF387A] p-[2.5vw] md:p-[0.9vw] rounded-md w-full max-w-[30vw] sm:max-w-[15vw] lg:max-w-[10vw] text-center">
-        Play Video
-      </button>
     </main>
   );
 };

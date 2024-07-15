@@ -21,7 +21,7 @@ const BundleCard = ({
           alt="bundle"
           className="z-20 w-full h-[50vw] sm:h-[25vw] lg:h-[20vw] rounded-t-[1vw]"
         />
-        <div className="absolute top-0 left-0 w-full  h-full bg-black opacity-40 rounded-t-[1vw] z-30"></div>
+        <div className="absolute top-0 left-0 w-full  h-full rounded-t-[1vw] z-30"></div>
       </picture>
       <section className="w-full absolute top-0 left-0 p-[2vw] z-40">
         <nav className="flex items-center justify-between">

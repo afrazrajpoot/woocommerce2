@@ -46,7 +46,7 @@ const Store = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          toast.error("Category not found");
+          // toast.error("Category not found");
           return;
         }
       }

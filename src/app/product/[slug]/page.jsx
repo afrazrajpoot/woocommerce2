@@ -132,7 +132,7 @@ const ProductDetails = ({ params: { slug } }) => {
   };
   return (
     <>
-      <main className="w-full relative">
+      <main className="w-full relative overflow-x-hidden">
         <nav className="w-full max-w-[90vw] mx-auto mt-[20vw] sm:mt-[8vw] lg:mt-[4vw] p-[2vw]">
           <p className="text-[5.5vw] md:text-[2.5vw] text-[#171717] w-full md:max-w-[50vw] font-semibold">
             {productDetails?.name}
@@ -149,13 +149,16 @@ const ProductDetails = ({ params: { slug } }) => {
             </Button>
           </section>
           <section className="w-full flex flex-col lg:flex-row items-start max-w-[90vw] mx-auto mt-[10vw] sm:mt-[5vw] lg:mt-[2vw]">
-            <iframe
-              src={mainVideo?.videos?.[0]}
-              width={1000}
-              height={700}
+         {mainVideo?.videos?.[0] || extractedContent?.videos?.[0] ?   <iframe
+              src={mainVideo?.videos?.[0] || extractedContent?.videos?.[0]}
+              className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
               alt="image"
               allowFullScreen
-            />
+            /> : <img
+            src={extractedContent?.images?.[0]?.src || productDetails.images[0]?.src}
+            alt="store details"
+            className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
+          />}
             <aside className="w-full mt-[10vw] sm:mt-[8vw] lg:mt-0 sm:max-w-[80vw] lg:max-w-[24vw] lg:ml-[2vw]">
               <section className="w-full shadow-md ml-[2vw] p-[5vw] lg:p-[1vw] rounded-lg">
                 <nav className="flex items-center justify-between p-[2vw] md:p-[1vw]">
@@ -243,22 +246,20 @@ const ProductDetails = ({ params: { slug } }) => {
         </nav>
         <section className="w-full flex flex-col lg:flex-row items-start max-w-[90vw] mx-auto mt-[10vw] sm:mt-[5vw] lg:mt-[2vw]">
           <article className="w-full lg:max-w-[70vw]">
-            <main className="flex flex-col md:flex-row items-start justify-evenly w-full">
-              {extractedContent?.videos?.map((video, index) => (
-                <main key={index}>
+            <main className="flex flex-col lg:flex-row items-start justify-evenly w-full">
+              {extractedContent?.videos?.slice(0, 2).map((video, index) => (
+                <main key={index} className="w-full">
                   <iframe
-                    className="rounded-[0.8vw]"
+                    className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[30vw] sm:max-w-[85vw] lg:max-w-[31vw] "
                     key={index}
                     src={video}
-                    width={450}
-                    height={300}
                     alt="store details"
                     allowFullScreen
                   />
                 </main>
               ))}
             </main>
-            <h1 className="text-[#171717] text-[5vw] md:text-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] font-semibold">
+              <h1 className="text-[#171717] text-[5vw] md:text-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] font-semibold">
               Overview
             </h1>
             <p className="text-[#171717] text-[4vw] sm:text-[2vw] lg:text-[1vw] mt-[1vw]">
@@ -281,13 +282,13 @@ const ProductDetails = ({ params: { slug } }) => {
               point, and many other parameters. How? Check out this video
               review.
             </p>
-            <Image
+            {extractedContent?.images?.[0] && <Image
               src={extractedContent?.images?.[0]?.src}
               width={1000}
               height={1000}
               alt="store details"
               className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-            />
+            />}
             <p className="text-[#171717] text-[4.3vw] sm:text-[2.3vw] lg:text-[1.3vw] mt-[10vw] sm:mt-[3vw] lg:mt-[1vw]">
               What resolution projects are supported
             </p>
@@ -297,16 +298,36 @@ const ProductDetails = ({ params: { slug } }) => {
               these transitions are resizable. Moreover, transitions will work
               with any aspect ratio in the frame, such as portrait 9:16
             </p>
-            {extractedContent?.images?.slice(1)?.map((image, i) => (
-              <Image
-                key={i}
-                src={image?.src}
-                width={1000}
-                height={1000}
-                alt="store details"
-                className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-              />
-            ))}
+            {extractedContent.images?.length > 2 ? (
+             <>
+              {extractedContent?.images?.slice(1)?.map((image, i) => (
+                <Image
+                  key={i}
+                  src={image?.src}
+                  width={1000}
+                  height={1000}
+                  alt="store details"
+                  className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
+                />
+              ))}
+             </>
+              
+            ) : (
+              <>
+              {extractedContent?.videos?.slice(2, 9).map((video, index) => (
+                <main key={index}>
+                  <iframe
+                    className="rounded-[0.8vw] mt-[10vw] sm:mt-[6vw] lg:mt-[3vw] w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[50vw] sm:max-w-[85vw] lg:max-w-[100%]"
+                    key={index}
+                    src={video}
+                    width={1000}
+                  height={1000}
+                    alt="store details"
+                    allowFullScreen
+                  />
+                </main>
+              ))}</>
+            )}
           </article>
           <aside className="w-full lg:max-w-[24vw] p-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] border-[1px] border-[525252] rounded-lg lg:ml-[2vw]">
             <h1 className="text-[5.5vw] sm:text-[2.5vw] lg:text-[1.5vw] text-[#171717] font-semibold">
