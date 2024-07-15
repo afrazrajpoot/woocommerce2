@@ -8,23 +8,23 @@ const Motion = ({ tick, info1, info2, info3, img }) => {
       }`}
     >
       <article
-        className={` flex flex-col gap-[3vw]  lg:gap-[1vw] ${
-          img === "/img/m2.png" && "lg:absolute lg:right-[25vw] lg:top-[5.5vw] "
-        }`}
+        className={` flex flex-col gap-[3vw] ${
+          img === "/img/m2.png" && "lg:ml-[5vw]"
+        }  lg:gap-[1vw] ${img === "/img/m2.png" && "lg:mt-[2vw]"}`}
       >
-        <div className="flex">
+        <div className={`flex ${img === "/img/m2.png" && "lg:ml-[30vw]"}`}>
           <figure>
             <img src={tick} alt="tick" />
           </figure>
           <p>{info1}</p>
         </div>
-        <div className="flex">
+        <div className={`flex ${img === "/img/m2.png" && "lg:ml-[30vw]"}`}>
           <figure>
             <img src={tick} alt="tick" />
           </figure>
           <p>{info2}</p>
         </div>
-        <div className="flex">
+        <div className={`flex ${img === "/img/m2.png" && "lg:ml-[30vw]"}`}>
           <figure>
             <img src={tick} alt="tick" />
           </figure>

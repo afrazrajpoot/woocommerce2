@@ -52,7 +52,18 @@ export default function DisabledAccordion() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className="flex lg:flex-row  flex-col items-start gap-[1vw]">
-                <img src={item.img} alt={item.title} className="" />
+                {/* <img src={item.img} alt={item.title} className="" /> */}
+                <div className="lg:w-[100vw] h-[50vh]  lg:h-[50vh]">
+                  <iframe
+                    src={item?.src}
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                    className="w-full h-full"
+                  ></iframe>
+                </div>
                 <Typography className="lg:text-[1vw] text-[3vw]">
                   {item.desc}
                 </Typography>

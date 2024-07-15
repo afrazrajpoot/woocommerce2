@@ -131,7 +131,7 @@ export const headerData = [
   },
   {
     title: "TUTORIALS",
-    link: "/tutorials",
+    link: "/detailarticles",
   },
   {
     title: "FAQS",
@@ -139,7 +139,7 @@ export const headerData = [
   },
   {
     title: "ABOUT",
-    link: "/about",
+    link: "/latestarticle",
   },
 ];
 export const menueData = [
@@ -156,7 +156,7 @@ export const menueData = [
   {
     title: "Subscriptions",
     icon: "/img/subscriptionIcon.png",
-    link: "/",
+    link: "/subscription",
   },
   {
     title: "Downloads",
@@ -464,19 +464,19 @@ export const footerLists = [
   {
     title: "Products",
     list: [
-      { title: "After Effect", path: "#" },
-      { title: "Premier Pro", path: "#" },
+      { title: "After Effect", path: `/store?query=After Effects` },
+      { title: "Premier Pro", path: `/store?query=Premiere Pro` },
     ],
   },
   {
     title: "Links",
     list: [
-      { title: "Store", path: "#" },
-      { title: "Tutorials", path: "#" },
-      { title: "FAQs", path: "#" },
-      { title: "Affiliate", path: "#" },
-      { title: "Returns & Refunds", path: "#" },
-      { title: "Licences", path: "#" },
+      { title: "Store", path: "/store" },
+      { title: "Tutorials", path: "tutorials" },
+      { title: "FAQs", path: "/faqs" },
+      { title: "Affiliate", path: "/affiliate" },
+      { title: "Returns & Refunds", path: "/refunds" },
+      { title: "Licences", path: "/licenses" },
     ],
   },
 ];
@@ -762,37 +762,37 @@ export const latestArticledata = [
 export const faqData = [
   {
     title: "What is Sonduckfilm Web?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/MOQs3TVrZrQ?si=ty576DljzrXBJShI",
     desc: "Sonduckfilm Web is a website that offers a variety of UI kits, templates, and design resources for web developers and designers. They have a wide variety of templates to choose from, including templates for landing pages, websites, web applications, and more. They also offer premium features, such as the ability to export your designs in high resolution, the ability to add custom fonts and colors, and the ability to collaborate with other designers.",
   },
   {
     title: "How much does Sonduckfilm Web cost?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/ItNoHd8tqi8?si=WGxKLrlcLh5-avwL",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
   {
     title: "What are the benefits of using Sonduckfilm Web?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/dy_z4wYxva4?si=vACijkH8994gGB-x",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
   {
     title: "What are the drawbacks of using Sonduckfilm Web?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/3gV3TYpgoFM?si=o-0PHSic7S5RXSNm",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
   {
     title: "Is Sonduckfilm Web a good resource for beginners?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/gkWrIcFQcNc?si=P7lAjKF0FryvHC2M",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
   {
     title: "Is Sonduckfilm Web a good resource for experienced designers?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/MOQs3TVrZrQ?si=ty576DljzrXBJShI",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
   {
     title: "How do I get started with Sonduckfilm Web?",
-    img: "/img/faq.png",
+    src: "https://www.youtube.com/embed/MOQs3TVrZrQ?si=ty576DljzrXBJShI",
     desc: "To use the templates, simply download the template files from the Sonduckfilm Web website and import them into your design software. From there, you can customize the templates to fit your specific needs by adding your own text, images, and other design elements.",
   },
 
