@@ -92,7 +92,7 @@ const AccountForm = () => {
           return;
         }
       }
-      if (session) {
+      if (session?.data) {
         if (
           data?.username !== sessionUser?.name ||
           data?.email !== sessionUser?.email
@@ -176,7 +176,7 @@ const AccountForm = () => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     setUser(userFromLocal);
   }, []);
-  console.log(user, "user");
+  console.log(user, "useree");
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">

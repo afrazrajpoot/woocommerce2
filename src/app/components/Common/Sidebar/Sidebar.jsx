@@ -14,6 +14,8 @@ const Sidebar = () => {
   function handleLogout() {
     if (session.data) {
       signOut("google");
+      navigate.push("/");
+
       return;
     }
     logout();

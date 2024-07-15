@@ -12,8 +12,6 @@ import Footer from "./components/Common/Footer/Footer";
 import Bundles from "./components/pagesComponents/landingpage/Bundles";
 import { useGlobalContext } from "@/context/globalState";
 import InputField from "./components/InputField";
-import { useEffect, useState } from "react";
-import axios from "axios";
 
 const LandingPage = () => {
   return (

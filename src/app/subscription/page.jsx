@@ -127,8 +127,8 @@ const Subscription = () => {
           ></iframe>
         </div>
       </section>
-      <section className="lg:absolute lg:top-[210vw] mt-[10vw] lg:mt-[0vw] w-full ">
-        <figure className="lg:ml-[22vw]">
+      <section className="lg:absolute lg:top-[210vw] mt-[10vw] lg:mt-[0vw] w-full">
+        <figure className="lg:ml-[15vw]">
           <img src="/img/feature.png" alt="feature" />
         </figure>
       </section>
