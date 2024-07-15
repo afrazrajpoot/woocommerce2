@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Sidebar from "../components/Common/Sidebar/Sidebar";
 import { downloadData } from "@/data/data";
 import axios from "axios";
+import { toast } from "sonner";
 
 const DownloadProduct = ({ img, desc }) => {
   const downloadFile = async () => {
@@ -20,7 +21,7 @@ const DownloadProduct = ({ img, desc }) => {
       link.click();
       link.parentNode.removeChild(link);
     } catch (error) {
-      console.error("Failed to download file:", error.message);
+      toast.error("Failed to download file:", error.message);
     }
   };
 

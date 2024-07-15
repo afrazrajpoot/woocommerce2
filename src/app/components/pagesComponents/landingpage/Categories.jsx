@@ -14,6 +14,7 @@ import SubscriptionPass from "./SubscriptionPass";
 import Bundles from "./Bundles";
 import Footer from "../../Common/Footer/Footer";
 import Loading from "../../Common/Loading";
+import { toast } from "sonner";
 
 const Categories = () => {
   const btnData = ["All Products", "Premiere Pro", "After Effects"];
@@ -38,7 +39,7 @@ const Categories = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          console.error("Category not found");
+          toast.error("Category not found");
           return;
         }
       }
@@ -47,7 +48,7 @@ const Categories = () => {
       const data = response.data;
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error.message);
+      toast.error("Error fetching products:", error.message);
     }
   };
   const handleClick = (label) => {

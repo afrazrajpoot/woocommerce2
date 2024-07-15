@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useGlobalContext } from "@/context/globalState";
+import { toast } from "sonner";
 
 const Bundles = () => {
   const [bundleData, setBundleData] = React.useState([]);
@@ -18,8 +19,10 @@ const Bundles = () => {
 
       setBundleData(resp.data);
     } catch (error) {
-      console.error("Error fetching products:", error.message);
+      toast.error("Error fetching products:", error.message);
     }
+    
+
   };
   const CustomPrevArrow = ({ style, onClick }) => (
     <span

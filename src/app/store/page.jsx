@@ -11,6 +11,7 @@ import Footer from "../components/Common/Footer/Footer";
 import { useGlobalContext } from "@/context/globalState";
 import Loading from "../components/Common/Loading";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 const Store = () => {
   const btnData = [
@@ -45,7 +46,7 @@ const Store = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          console.error("Category not found");
+          toast.error("Category not found");
           return;
         }
       }
@@ -61,7 +62,7 @@ const Store = () => {
       setTotalPages(Math.ceil(totalProducts / itemsPerPage));
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error.message);
+      toast.error("Error fetching products:", error.message);
     }
   };
 
@@ -76,7 +77,7 @@ const Store = () => {
     } else {
       params.delete("query");
     }
-    console.log(totalPages, "totalPages");
+    // console.log(totalPages, "totalPages");
     // Update URL without reloading the page
     window.history.replaceState(
       {},
@@ -198,10 +199,9 @@ const Store = () => {
         </nav>
         <nav className="lg:hidden sm:hidden pl-[76vw] ml-[5vw] pr-[2vw] pb-[4vw]  mt-[1vw] flex gap-[3vw] justify-center overflow-x-scroll">
           {btnData?.map((elem, ind) => (
-            <div className="flex">
+            <div className="flex" key={ind}>
               <Button
                 style={{ textTransform: "capitalize" }}
-                key={ind}
                 variant="outlined"
                 className={`bg-[#FFFF] font-bold text-[#525252]  border-[#525252] border-[1px] w-[30vw]   text-[3vw]   hover:shadow-md    py-[2.5vw] rounded-md  px-[3vw]    text-center ${
                   ind === 0 &&

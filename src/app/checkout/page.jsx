@@ -10,20 +10,16 @@ import { loadScript } from "@paypal/paypal-js";
 import { toast } from "sonner";
 
 const page = () => {
-  const [createOrder, setCreateOrder] = useState({});
   const [checkoutDetail, setCheckoutDetail] = useState();
-  const {
-    fetchWooCommerceData,
-    productsAddedToCart,
-    customerDetails,
-    CreateWooCommerceData,
-  } = useGlobalContext();
+  const { productsAddedToCart, customerDetails, CreateWooCommerceData } =
+    useGlobalContext();
   const fetchOrder = async (data) => {
     try {
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
-      console.log(response, "respoooooone");
+      // console.log(response, "respoooooone");
     } catch (err) {
-      console.log(err.message);
+      toast.error(err.message);
+      // console.log(err.message);
     }
   };
   useEffect(() => {
@@ -91,7 +87,7 @@ const page = () => {
             },
             onApprove: (data, actions) => {
               return actions.order.capture().then((detail) => {
-                console.log(detail, "Payment successful:");
+                // console.log(detail, "Payment successful:");
 
                 const lineItems = detail?.purchase_units?.[0]?.items?.map(
                   (item) => ({
@@ -129,8 +125,8 @@ const page = () => {
                       detail.purchase_units[0].shipping.address.postal_code,
                     country:
                       detail.purchase_units[0].shipping.address.country_code,
-                    email: detail.payer.email_address,
-                    phone: "(555) 555-5555",
+                    email: customerDetails?.email,
+                    phone: customerDetails?.phone,
                   },
                   shipping: {
                     first_name: detail.payer.name.given_name,
@@ -183,14 +179,23 @@ const page = () => {
               });
             },
             onError: (err) => {
-              console.log("Payment error:", err);
+              toast.error("Payment error", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              // console.log("Payment error:", err);
             },
           })
           .render("#paypal-button-container");
       }
     );
   }
-  console.log(createOrder, "oredr");
 
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">

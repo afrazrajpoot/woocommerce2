@@ -16,6 +16,7 @@ import { extractContent } from "@/app/utils/extractContent";
 import Loading from "@/app/components/Common/Loading";
 import Drawer from "@mui/material/Drawer";
 import ChechoutDrawer from "@/app/components/ChechoutDrawer";
+import { toast } from "sonner";
 
 const ProductDetails = ({ params: { slug } }) => {
   const [productDetails, setProductDetails] = useState(null);
@@ -80,7 +81,7 @@ const ProductDetails = ({ params: { slug } }) => {
       setProductDetails(product);
       fetchRelatedProducts(product?.related_ids);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      toast.error("Error fetching products:", error);
     }
   };
 
@@ -89,10 +90,10 @@ const ProductDetails = ({ params: { slug } }) => {
       const relatedProductsData = await Promise.all(
         relatedIds.map((id) => fetchWooCommerceData(`wc/v3/products/${id}`))
       );
-      console.log(relatedProductsData, "relatedProductsData");
+      // console.log(relatedProductsData, "relatedProductsData");
       setRelatedProducts(relatedProductsData);
     } catch (error) {
-      console.error("Error fetching related products:", error);
+      toast.error("Error fetching related products:", error);
     }
   };
 
@@ -244,7 +245,7 @@ const ProductDetails = ({ params: { slug } }) => {
           <article className="w-full lg:max-w-[70vw]">
             <main className="flex flex-col md:flex-row items-start justify-evenly w-full">
               {extractedContent?.videos?.map((video, index) => (
-                <main>
+                <main key={index}>
                   <iframe
                     className="rounded-[0.8vw]"
                     key={index}

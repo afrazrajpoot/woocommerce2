@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
 import axios from "axios";
+import { toast } from "sonner";
 const UserContext = createContext();
 
 export const useGlobalContext = () => useContext(UserContext);
@@ -76,7 +77,7 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error fetching WooCommerce data:", error.message);
+      toast.error("Error fetching WooCommerce data:", error.message);
       throw error;
     }
   };
@@ -89,7 +90,7 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error creating WooCommerce data:", error.message);
+      toast.error("Error creating WooCommerce data:", error.message);
       throw error;
     }
   };

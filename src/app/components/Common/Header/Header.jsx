@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import { headerData } from "@/data/data";
 import { useGlobalContext } from "@/context/globalState";
 import { styled } from "@mui/material/styles";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const session = useSession();

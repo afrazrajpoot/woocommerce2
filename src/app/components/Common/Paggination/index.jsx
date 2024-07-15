@@ -5,7 +5,7 @@ import KeyboardArrowRightSharpIcon from "@mui/icons-material/KeyboardArrowRightS
 import KeyboardDoubleArrowRightSharpIcon from "@mui/icons-material/KeyboardDoubleArrowRightSharp";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  console.log("totalPages:", totalPages); // Log totalPages to debug
+  // console.log("totalPages:", totalPages); // Log totalPages to debug
 
   // Ensure totalPages is a valid positive integer
   const totalPagesInt = Math.max(Math.floor(totalPages), 1);

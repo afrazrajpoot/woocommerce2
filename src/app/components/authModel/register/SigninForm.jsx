@@ -30,17 +30,15 @@ const SigninForm = () => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  // const onSubmit = async (formData) => {
-  //   const res = await login(formData);
-  //   // console.log(res, "ress");
-  //   tokenInLocal(res);
-  // };
   const onSubmit = async (formData) => {
     try {
       const res = await login(formData);
       tokenInLocal(res);
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to login", {
+        position: "top-right",
+      });
+      // console.log(error);
     }
     // console.log(res, "ress");
   };

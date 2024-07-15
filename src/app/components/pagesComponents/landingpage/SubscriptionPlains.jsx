@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SubscriptionCard from "../../Cards/SubscriptionCard";
 import { subscriptionPlans } from "@/data/data";
 import { loadScript } from "@paypal/paypal-js";
+import { toast } from "sonner";
 
 const SubscriptionPlans = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -25,13 +26,25 @@ const SubscriptionPlans = () => {
             },
             onApprove: (data, actions) => {
               // Handle approval
+              toast.success("payment success", {
+                position: "top-right",
+              });
             },
             onCancel: (data) => {
               // Handle cancellation
             },
             onError: (err) => {
               // Handle errors
-              console.error(err);
+              toast.error("payment error", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
             },
           })
           .render("#paypal-button-container");

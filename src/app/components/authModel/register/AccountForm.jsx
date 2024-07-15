@@ -3,6 +3,7 @@
 import { useGlobalContext } from "@/context/globalState";
 import { accountForm2, accoutForm } from "@/data/data";
 import { Avatar, Button } from "@mui/material";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,6 +29,8 @@ const FormInput = ({ label, type, name, value, onChange }) => {
 };
 
 const AccountForm = () => {
+  const session = useSession();
+  // console.log(session.data.user.name, "session data");
   const navigate = useRouter();
   const {
     CreateWooCommerceData,
@@ -59,7 +62,6 @@ const AccountForm = () => {
     },
   });
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCustomerDetails({ ...customerDetails, [name]: value });
@@ -67,6 +69,23 @@ const AccountForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      if (
+        data?.username != session.data.user.name ||
+        data?.email != session.data.user.email
+      ) {
+        toast.error("No changes made", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        // console.log("error data");
+        return;
+      }
       const requestData = {
         username: customerDetails?.username || data?.username,
         first_name: customerDetails?.first_name || data?.first_name,
@@ -97,7 +116,8 @@ const AccountForm = () => {
       }
       reset();
     } catch (error) {
-      console.log(error.message, "error creating/updating account");
+      toast.error(error.message);
+      // console.log(error.message, "error creating/updating account");
     }
   };
 

@@ -4,7 +4,6 @@ import Sidebar from "../components/Common/Sidebar/Sidebar";
 import AccountForm from "../components/authModel/register/AccountForm";
 import CreatePasswordForm from "../components/authModel/register/CreatePasswordForm";
 
-
 const page = () => {
   return (
     <main className="bg-[#FAFAFA] lg:h-[140vh] h-[210vh]  overflow-x-hidden ">
@@ -27,7 +26,7 @@ const page = () => {
               className=" p-[2vw] bg-white border-[1px] border-[#F5F5F5] mt-[1vw] sm:mt-[-8vw] translate-y-[15vw]
               lg:translate-y-0 rounded-lg w-[93vw] ml-[-4.8vw] lg:ml-[0vw] lg:w-[30vw] sm:w-[90vw] lg:mt-[1vw]  sm:ml-[-13vw]"
             >
-            <CreatePasswordForm />
+              <CreatePasswordForm />
             </div>
           </div>
         </article>
