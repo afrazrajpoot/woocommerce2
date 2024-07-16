@@ -69,29 +69,43 @@ const Subscription = () => {
             width={1100}
             height={1000}
           />
-          <footer className="flex flex-col lg:absolute lg:top-[35vw] md:flex-row items-start shadow-lg  justify-between p-[2vw] bg-[#ffff] w-full max-w-[80vw] rounded-lg lg:mt-[0vw] mt-[10vw]">
+          <footer className="flex flex-col  lg:flex-row items-start shadow-lg   justify-between p-[2vw] bg-[#ffff] w-full max-w-[80vw] rounded-lg  mt-[10vw]">
             <section className="w-full md:max-w-[35vw]">
-              <h2 className="text-[4.3vw] md:text-[1.3vw] text-[#171717] text-center font-medium">
+              <h2 className="text-[4.3vw] md:text-[1.3vw] mt-[1vw] text-[#171717] text-center font-medium">
                 What is MotionDuck?
               </h2>
-              <img
-                src={"/img/card1.png"}
-                className="mt-[3vw] rounded-lg w-full h-[30vw] md:h-[20vw]"
-              />
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/MOQs3TVrZrQ?si=aiYrrSNTJC7W0Ndi"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                className="rounded-md w-full lg:max-w-[50vw] max-w-[80vw] mt-[5vw] lg:mt-[1vw]"
+                allowfullscreen
+              ></iframe>
             </section>
             <section className="w-full t-[4vw] md:mt-0 md:max-w-[35vw]">
-              <h2 className="text-[4.3vw] md:text-[1.3vw] text-[#171717] text-center font-medium">
+              <h2 className="text-[4.3vw] md:text-[1.3vw] lg:mt-[1vw] mt-[3vw] text-[#171717] text-center font-medium">
                 Subscription Walkthrough
               </h2>
-              <img
-                src={"/img/card2.png"}
-                className="mt-[3vw] rounded-lg w-full h-[30vw] md:h-[20vw]"
-              />
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/6xwqSUPC4bM?si=2-gP_9YS90DRybHN"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                className="rounded-md w-full lg:max-w-[50vw] max-w-[80vw] mt-[5vw] lg:mt-[1vw]"
+                allowfullscreen
+              ></iframe>
             </section>
           </footer>
         </article>
       </main>
-      <section className="lg:absolute mt-[10vw] lg:mt-[5vw] lg:top-[70vw]  w-full">
+      <section className=" mt-[10vw] lg:mt-[5vw]   w-full">
         <h1 className="text-center font-bold text-[5vw] lg:text-[2.4vw]">
           Pricing
         </h1>
@@ -101,7 +115,7 @@ const Subscription = () => {
           ))}
         </div>
       </section>
-      <section className="lg:absolute lg:top-[120vw] mt-[10vw] lg:mt-[0vw]  w-full ">
+      <section className="  mt-[10vw]   w-full ">
         <h1 className="text-center font-bold text-[5vw] md:text-[2.4vw]">
           What is MotionDuck?
         </h1>
@@ -111,11 +125,11 @@ const Subscription = () => {
           ))}
         </div>
       </section>
-      <section className="lg:absolute lg:top-[170vw] mt-[10vw] lg:mt-[0vw]  w-full lg:ml-[0vw] ml-[0.5vw]">
+      <section className="  mt-[10vw]   w-full  ">
         <h1 className="text-center font-bold text-[5vw] lg:text-[2.4vw]">
           Save time
         </h1>
-        <div className="w-full lg:max-w-[40vw] mx-auto h-[60vh] max-w-[95vw] ">
+        <div className="w-full lg:max-w-[80vw] lg:max-h-[30vw]  xl:h-[50vh] xl:max-w-[40vw] mx-auto h-[60vh] max-w-[95vw] ">
           <iframe
             src="https://www.youtube.com/embed/KqhARH_JaPE?si=systEFIA4suGJ5bO"
             title="YouTube video player"
@@ -127,12 +141,13 @@ const Subscription = () => {
           ></iframe>
         </div>
       </section>
-      <section className="lg:absolute lg:top-[210vw] mt-[10vw] lg:mt-[0vw] w-full">
-        <figure className="lg:ml-[15vw]">
+      <section className=" mt-[10vw]  w-full">
+        <figure className=" flex justify-center items-center ">
           <img src="/img/feature.png" alt="feature" />
         </figure>
       </section>
-      <section className="w-full mt-[10vw] md:mt-[2vw] bg-[#F8F8F8] lg:mt-[230vw]">
+
+      <section className="w-full mt-[10vw] md:mt-[2vw] bg-[#F8F8F8] ">
         <Categories />
       </section>
       <section className="w-full mt-[10vw] md:mt-[2vw] bg-[#F8F8F8]">

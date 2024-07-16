@@ -58,7 +58,7 @@ const SubscriptionCard = ({ title, price, features, paymentMethod, paypalContain
           Select Plan
         </button>
       </article>
-      <div id={paypalContainerId}></div>
+      <div className="mt-[3vw]" id={paypalContainerId}></div>
     </main>
   );
 };

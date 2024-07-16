@@ -3,14 +3,14 @@ import React from "react";
 
 const Pricing = ({ plan, price, desc, info1, info2, info3 }) => {
   return (
-    <main className="w-full max-w-[80vw] lg:max-w-[25vw] lg:h-[70vh]">
+    <main className="w-full  h-[95vw] lg:h-[35vw] max-w-[80vw] lg:max-w-[25vw] ">
       <section
-        className={`flex flex-col gap-[2vw] lg:gap-[1.5vw] ${
+        className={`flex flex-col p-[4vw]  lg:p-[1vw]  gap-[5vw] lg:gap-[1.5vw] ${
           plan === "MONTHLY" && "bg-white"
         } ${plan === "40 PACK BUNDLE" ? "bg-[#FF387A] text-white" : ""}  ${
           plan === "Annual" && "bg-black"
         } rounded-xl shadow-lg `}
-        style={{ width: "100%", height: "100%", padding: "1.5vw" }}
+        style={{ width: "100%", height: "100%" }}
       >
         <h2
           className={`lg:text-[1.3vw] text-[4vw] font-medium ${

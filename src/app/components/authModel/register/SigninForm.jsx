@@ -17,8 +17,13 @@ import { useRouter } from "next/navigation";
 
 const SigninForm = () => {
   const navigate = useRouter();
-  const { tokenInLocal, setLoginModel, setForgetModel, customerID } =
-    useGlobalContext();
+  const {
+    tokenInLocal,
+    setLoginModel,
+    setForgetModel,
+    customerID,
+    setLogedUsername,
+  } = useGlobalContext();
   const [showPassword, setShowPassword] = useState(false);
   const {
     handleSubmit,
@@ -33,7 +38,8 @@ const SigninForm = () => {
   const onSubmit = async (formData) => {
     try {
       const res = await login(formData);
-      tokenInLocal(res);
+      // console.log(res.data.user.fullName, "ress");
+      setLogedUsername(res.data.user.fullName);
     } catch (error) {
       toast.error("Failed to login", {
         position: "top-right",
@@ -70,6 +76,8 @@ const SigninForm = () => {
         progress: undefined,
         theme: "light",
       });
+      tokenInLocal(data);
+
       if (customerID) {
         navigate.push("/");
       } else {
@@ -183,4 +191,4 @@ const SigninForm = () => {
   );
 };
 
-export default SigninForm;
+export default SigninForm

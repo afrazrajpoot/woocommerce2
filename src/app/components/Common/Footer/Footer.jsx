@@ -9,7 +9,7 @@ const Footer = () => {
     <footer className='w-full p-[2vw] bg-[#171717]'>
         <main className='w-full sm:max-w-[90vw] lg:max-w-[80vw] mx-auto mt-[2vw] flex flex-col md:flex-row items-start'>
         <section className='w-full md:max-w-[20vw]'>
-        <Image src={"/img/logoText.png"} alt='logo' width={200} height={50} />
+        <Link href={'/'}><Image src={"/img/logoText.png"} alt='logo' width={200} height={50} /></Link>
         <p className='text-[#525252] mt-[3.5vw] md:mt-[1.5vw] text-[4vw] sm:text-[1.5vw] lg:text-[1vw] w-full sm:max-w-[40vw] lg:max-w-[20vw]'>Market design is the process of designing markets to achieve specific goals.</p>
         </section>
         <section className='w-full md:max-w-[20vw] mt-[6vw] md:mt-0 md:ml-[10vw]'>
@@ -61,8 +61,8 @@ const Footer = () => {
                 ))}
             </section>
             <p className='flex items-center text-[#fff] mt-[3vw] md:mt-0 text-[3.9vw] sm:text-[1.5vw] lg:text-[0.9vw]'>
-                <span>Terms of Service</span>
-                <span className='ml-[4vw]'>Privacy Policy</span>
+                <Link href={'/termsandconditions'}><span>Terms of Service</span></Link>
+                <Link href={'/privacypolicy'}><span className='ml-[4vw]'>Privacy Policy</span></Link>
             </p>
         </article>
     </footer>
