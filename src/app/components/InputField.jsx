@@ -38,7 +38,7 @@ const InputField = () => {
   };
 
   return (
-    <main className="flex">
+    <main className="flex flex-col lg:flex-row">
       <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
         <TextField
           id="outlined-basic"

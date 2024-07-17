@@ -161,7 +161,7 @@ export const menueData = [
   {
     title: "Downloads",
     icon: "/img/downloadIcon.png",
-    link: "/download",
+    link: "/downloads",
   },
   {
     title: "Address",

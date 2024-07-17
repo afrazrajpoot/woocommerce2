@@ -7,12 +7,6 @@ const UserContext = createContext();
 
 export const useGlobalContext = () => useContext(UserContext);
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-const WOOCOMMERCE_CONSUMER_KEY =
-  process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY;
-const WOOCOMMERCE_CONSUMER_SECRET =
-  process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET;
-
 export const UserProvider = ({ children }) => {
   function tokenInLocal(data) {
     if (data) {
@@ -41,32 +35,16 @@ export const UserProvider = ({ children }) => {
   const [openOtpModel, setOtpModel] = useState(false);
   const [openResetModel, setResetModel] = useState(false);
   const [otpReset, setOtpReset] = useState();
-  const [dataForResetPassword, setDataForResetPassword] = useState({
-    oldPassword: "",
-    email: "",
-    otp: "",
-    newPassword: "",
-  });
+  const [dataForResetPassword, setDataForResetPassword] = useState({oldPassword: "", email: "",  otp: "",  newPassword: ""});
   const [querySuggestion, setQuerySuggestion] = useState();
   const [customerDetails, setCustomerDetails] = useState({
-    username: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    date_created: "",
-    postcode: "",
-    phone: "",
-    address1: "",
-    city: "",
-    country: "",
+    username: "", first_name: "", last_name: "", email: "",
+    date_created: "", postcode: "", phone: "", address1: "",
+    city: "", country: "",
   });
   const [customerID, setCustomerID] = useState(null);
   const [loggedUser, setLoggedUser] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState({
-    price: null,
-    features: [],
-  });
-
+  const [selectedPlan, setSelectedPlan] = useState({ price: null, features: [],});
   const [cart, showCart] = useState(false);
   const toggleSidebar = () => {
     setMobileSidebarOpen((prev) => !prev);
@@ -167,6 +145,8 @@ export const UserProvider = ({ children }) => {
       setCartCount(storedProducts?.length);
     }
   }, [cartCount]);
+
+ 
 
   return (
     <UserContext.Provider

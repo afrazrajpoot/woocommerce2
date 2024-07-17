@@ -75,46 +75,46 @@ const AccountForm = () => {
       const localUser = user?.data?.user || {};
 
       if (user) {
-        if (
-          data?.username !== localUser.fullName ||
-          data?.email !== localUser.email
-        ) {
-          toast.error("Add login email and username", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          return;
-        }
-      }
-      if (session?.data) {
-        if (
-          data?.username !== sessionUser?.name ||
-          data?.email !== sessionUser?.email
-        ) {
-          toast.error("use google email and name", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          return;
-        }
-      }
+      //   if (
+      //     data?.username !== localUser.fullName ||
+      //     data?.email !== localUser.email
+      //   ) {
+      //     toast.error("Add login email and username", {
+      //       position: "top-right",
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       theme: "light",
+      //     });
+      //     return;
+      //   }
+       }
+      // if (session?.data) {
+      //   if (
+      //     data?.username !== sessionUser?.name ||
+      //     data?.email !== sessionUser?.email
+      //   ) {
+      //     toast.error("use google email and name", {
+      //       position: "top-right",
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       theme: "light",
+      //     });
+      //     return;
+      //   }
+      // }
       const requestData = {
-        username: customerDetails?.username || data?.username,
+        username: customerDetails?.username,
         first_name: customerDetails?.first_name || data?.first_name,
         last_name: customerDetails?.last_name || data?.last_name,
-        email: customerDetails?.email || data?.email,
+        email: customerDetails?.email,
         billing: {
           phone: customerDetails?.phone || data?.phone,
           address_1: customerDetails?.address1 || data?.address1,

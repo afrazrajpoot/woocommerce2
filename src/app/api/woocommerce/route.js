@@ -24,14 +24,8 @@ export async function GET(req) {
       }
     );
 
-    // Log headers for debugging
-    // console.log(
-    //   "WooCommerce Response Headers:",
-    //   response.headers["x-wp-total"]
-    // );
-
     return NextResponse.json(
-      { data: response.data, totalProducts: response.headers["x-wp-total"] },
+      { data: response.data, totalProducts: response.headers["x-wp-total"], count: response.data.length },
       { status: 200 }
     );
   } catch (error) {

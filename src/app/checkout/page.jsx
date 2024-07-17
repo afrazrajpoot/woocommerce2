@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const page = () => {
   const [checkoutDetail, setCheckoutDetail] = useState();
-  const { productsAddedToCart, customerDetails, CreateWooCommerceData } =
+  const { productsAddedToCart, customerDetails, CreateWooCommerceData, customerID } =
     useGlobalContext();
   const fetchOrder = async (data) => {
     try {
@@ -110,6 +110,7 @@ const page = () => {
                   payment_method: "paypal",
                   payment_method_title: "PayPal",
                   set_paid: true,
+                  customer_id: customerID,
                   billing: {
                     first_name: detail.payer.name.given_name,
                     last_name: detail.payer.name.surname,
