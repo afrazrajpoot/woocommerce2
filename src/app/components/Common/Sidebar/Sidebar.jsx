@@ -47,7 +47,7 @@ const Sidebar = () => {
                 <Link
                   href={item.link}
                   key={index}
-                  className="flex items-center gap-[0.4vw]"
+                  className="flex items-center hover:bg-[#F6F6F6] p-[0.5vw] rounded-md gap-[0.4vw]"
                 >
                   <img src={item.icon} alt="" className="w-[1vw] h-[1vw]" />
                   <p

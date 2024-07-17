@@ -91,7 +91,7 @@ const Header = () => {
                 alt="profile icon"
                 className="sm:w-[2vw] lg:w-[1.5vw]"
               />
-              <span>{logedUsername || userName?.slice(" ")[0]}</span>
+              <span>{logedUsername?.slice(" ")[0] || userName}</span>
             </div>
           </Link>
         </div>

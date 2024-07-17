@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "../components/authModel/register/Footer";
+import Footer from "../../components/authModel/register/Footer";
 
 const Layout = ({ children }) => {
   return (

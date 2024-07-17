@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Link from "next/link";
-// import Footer from "../components/Common/Footer/Footer";
+// import Footer from "../../components/Common/Footer/Footer";
 import { useGlobalContext } from "@/context/globalState";
 import Pack from "../../Cards/Pack";
 import SubscriptionPass from "./SubscriptionPass";

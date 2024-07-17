@@ -156,7 +156,7 @@ export const menueData = [
   {
     title: "Subscriptions",
     icon: "/img/subscriptionIcon.png",
-    link: "/subscription",
+    link: "/subscriptions",
   },
   {
     title: "Downloads",
