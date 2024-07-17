@@ -10,9 +10,7 @@ import Link from "next/link";
 // import Footer from "../components/Common/Footer/Footer";
 import { useGlobalContext } from "@/context/globalState";
 import Pack from "../../Cards/Pack";
-import SubscriptionPass from "./SubscriptionPass";
-import Bundles from "./Bundles";
-import Footer from "../../Common/Footer/Footer";
+
 import Loading from "../../Common/Loading";
 import { toast } from "sonner";
 
@@ -39,7 +37,7 @@ const Categories = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          // toast.error("Category not found");
+          toast.error("Category not found");
           return;
         }
       }
@@ -48,7 +46,7 @@ const Categories = () => {
       const data = response.data;
       setProducts(data);
     } catch (error) {
-      toast.error("Error fetching products:", error.message);
+      toast.error("Network error please try again");
     }
   };
   const handleClick = (label) => {

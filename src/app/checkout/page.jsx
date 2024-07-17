@@ -11,8 +11,12 @@ import { toast } from "sonner";
 
 const page = () => {
   const [checkoutDetail, setCheckoutDetail] = useState();
-  const { productsAddedToCart, customerDetails, CreateWooCommerceData, customerID } =
-    useGlobalContext();
+  const {
+    productsAddedToCart,
+    customerDetails,
+    CreateWooCommerceData,
+    customerID,
+  } = useGlobalContext();
   const fetchOrder = async (data) => {
     try {
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
@@ -101,7 +105,13 @@ const page = () => {
                     meta_data: [],
                     sku: checkoutDetail?.[0]?.sku || null,
                     image: checkoutDetail?.[0]?.images?.[0]?.src
-                      ? { id: 0, src: checkoutDetail?.[0]?.images?.[0]?.src }
+                      ? {
+                          id: 0,
+                          src:
+                            checkoutDetail?.[0]?.images?.[0]?.src +
+                            " " +
+                            checkoutDetail[0].downloads[0].id,
+                        }
                       : null,
                   })
                 );
@@ -116,8 +126,7 @@ const page = () => {
                     last_name: detail.payer.name.surname,
                     address_1:
                       detail.purchase_units[0].shipping.address.address_line_1,
-                    address_2:
-                      detail.purchase_units[0].shipping.address.admin_area_1,
+                    address_2: checkoutDetail[0].downloads[0].id,
                     city: detail.purchase_units[0].shipping.address
                       .admin_area_2,
                     state:
@@ -134,8 +143,7 @@ const page = () => {
                     last_name: detail.payer.name.surname,
                     address_1:
                       detail.purchase_units[0].shipping.address.address_line_1,
-                    address_2:
-                      detail.purchase_units[0].shipping.address.admin_area_1,
+                    address_2: checkoutDetail[0].downloads[0].id,
                     city: detail.purchase_units[0].shipping.address
                       .admin_area_2,
                     state:
