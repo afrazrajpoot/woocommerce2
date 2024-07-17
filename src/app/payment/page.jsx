@@ -11,6 +11,9 @@ import React, { useEffect, useState } from "react";
 import Steper from "../components/authModel/register/Steper";
 import { useGlobalContext } from "@/context/globalState";
 import CheckoutButton from "../components/CheckoutButton";
+import { loadScript } from "@paypal/paypal-js";
+import { toast } from "sonner";
+import SuccessPaymentModel from "../components/authModel/resetModal/SuccessPaymentModel";
 
 const Page = () => {
   const paymentData = [
@@ -25,32 +28,140 @@ const Page = () => {
   ];
   const [checkoutDetail, setCheckoutDetail] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const { fetchWooCommerceData } = useGlobalContext();
-
-  useEffect(() => {
-    const checkout = JSON.parse(localStorage.getItem("checkout"));
-    setCheckoutDetail(checkout);
-  }, []);
-
-  async function paymentMethod() {
-    try {
-      const response = await fetchWooCommerceData(
-        "wc/v3/payment_gateways/bacs"
-      );
-      // console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const {
+    fetchWooCommerceData,
+    selectedPlan,
+    productsAddedToCart,
+    customerDetails,
+    CreateWooCommerceData,
+  } = useGlobalContext();
+  const [successPayment, setSuccessPayment] = useState(false);
+  // useEffect(() => {
+  //   const checkout = JSON.parse(localStorage.getItem("checkout"));
+  //   setCheckoutDetail(checkout);
+  // }, []);
+  // console.log(selectedPlan, "plan subscription");
+  // async function paymentMethod() {
+  //   try {
+  //     const response = await fetchwWooCommerceData(
+  //       "wc/v3/payment_gateways/bacs"
+  //     );
+  //     // console.log(response);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   const handleRadioChange = (event) => {
     setSelectedPayment(event.target.value);
   };
+  const paymentMethod = async () => {
+    loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
+      (paypal) => {
+        paypal
+          .Buttons({
+            createOrder: (data, actions) => {
+              const items = [
+                {
+                  name: "Monthly Subscription",
+                  unit_amount: {
+                    currency_code: "USD",
+                    value: parseFloat(selectedPlan.price).toFixed(2),
+                  },
+                  quantity: "1",
+                },
+              ];
+
+              const itemTotal = items
+                .reduce(
+                  (total, item) =>
+                    total +
+                    parseFloat(item.unit_amount.value) *
+                      parseInt(item.quantity),
+                  0
+                )
+                .toFixed(2);
+
+              return actions.order.create({
+                purchase_units: [
+                  {
+                    amount: {
+                      value: itemTotal,
+                      breakdown: {
+                        item_total: {
+                          currency_code: "USD",
+                          value: itemTotal,
+                        },
+                      },
+                    },
+                    items: items,
+                  },
+                ],
+              });
+            },
+            onApprove: (data, actions) => {
+              return actions.order.capture().then((detail) => {
+                const lineItems = detail.purchase_units[0].items.map(
+                  (item) => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.unit_amount.value,
+                    subtotal: item.unit_amount.value,
+                    total: item.unit_amount.value,
+                    taxes: [],
+                    meta_data: [],
+                  })
+                );
+                console.log(lineItems, "succecc payment");
+                // toast.success("Payment successful", {
+                //   position: "top-right",
+                //   autoClose: 3000,
+                //   hideProgressBar: false,
+                //   closeOnClick: true,
+                //   pauseOnHover: true,
+                //   draggable: true,
+                //   progress: undefined,
+                //   theme: "light",
+                // });
+                setSuccessPayment(true);
+              });
+            },
+            onCancel: (data) => {
+              toast.error("Payment cancelled", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            },
+            onError: (err) => {
+              toast.error("Payment error", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              console.error("Payment error:", err);
+            },
+          })
+          .render("#paypal-button-container");
+      }
+    );
+  };
+
   const product = {
     title: "Sample Product",
     description: "This is a sample product description.",
     price: "10.00",
-    image: "/path/to/image.jpg"
+    image: "/path/to/image.jpg",
   };
 
   return (
@@ -79,7 +190,7 @@ const Page = () => {
               <FormControl component="fieldset">
                 <RadioGroup
                   value={selectedPayment}
-                  onChange={handleRadioChange}
+                  // onChange={handleRadioChange}
                 >
                   <article className="flex gap-[1vw]">
                     {paymentData.map((elem, ind) => (
@@ -146,16 +257,13 @@ const Page = () => {
                 Summary
               </p>
               <div className="mt-[1vw] flex flex-col lg:gap-[0.8vw] gap-[4vw]">
-                {checkoutDetail?.cartedItems?.map((elem, ind) => (
+                {selectedPlan.features?.map((elem, ind) => (
                   <div
                     className="flex gap-[1vw] justify-between items-center"
                     key={ind}
                   >
                     <p className="font-medium lg:text-[0.9vw] sm:text-[2vw] text-[3.5vw]">
-                      {elem.name}
-                    </p>
-                    <p className="lg:text-[1vw] text-[2.5vw] font-bold lg:font-medium sm:text-[1.5vw] text-[#FF689A]">
-                      {elem.price}$
+                      {elem}
                     </p>
                   </div>
                 ))}
@@ -166,7 +274,7 @@ const Page = () => {
                   Subtotal
                 </p>
                 <p className="text-[#FF689A] font-bold lg:font-medium lg:text-[0.8vw] text-[2.5vw] sm:text-[1.5vw] lg:mt-[0vw] mt-[3vw]">
-                  ${checkoutDetail?.totalPrice}
+                  ${selectedPlan?.price}
                 </p>
               </div>
               <Button
@@ -177,6 +285,10 @@ const Page = () => {
               >
                 Continue to Payment
               </Button>
+              <div
+                id="paypal-button-container"
+                className="lg:mt-[1vw] mt-[3vw]"
+              ></div>
               <div className="border-[0.2px] border-b-[#EEEEEE] lg:mt-[1vw] mt-[3vw] "></div>
               <div className="flex lg:translate-x-[-4.2vw] w-full lg:mt-[1vw] mt-[3vw] lg:ml-[5vw] sm:ml-[4vw] ml-[-1vw] lg:gap-[2vw] gap-[7.5vw]">
                 {summaryOptions?.map((elem, ind) => (
@@ -207,12 +319,10 @@ const Page = () => {
           </section>
         </section>
       </section>
-      <div className="mt-[5vw] ml-[5vw]">
-        <CheckoutButton product={product} />
-      </div>
+      {successPayment && <SuccessPaymentModel success={true} />}
     </main>
   );
 };
 
 export default Page;
-    // fVav oQs7 7NOv NZs9 LFhY tA8R   enable api pass
+// fVav oQs7 7NOv NZs9 LFhY tA8R   enable api pass

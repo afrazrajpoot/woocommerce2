@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
     setLogin(false);
     setLoginModel(false);
   }
-  const [logedUsername,setLogedUsername] = useState(null)
+  const [logedUsername, setLogedUsername] = useState(null);
   const [login, setLogin] = useState(null);
   const [openLoginModel, setLoginModel] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -62,6 +62,10 @@ export const UserProvider = ({ children }) => {
   });
   const [customerID, setCustomerID] = useState(null);
   const [loggedUser, setLoggedUser] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState({
+    price: null,
+    features: [],
+  });
 
   const [cart, showCart] = useState(false);
   const toggleSidebar = () => {
@@ -211,7 +215,10 @@ export const UserProvider = ({ children }) => {
         showCart,
         querySuggestion,
         setQuerySuggestion,
-        logedUsername,setLogedUsername
+        logedUsername,
+        setLogedUsername,
+        selectedPlan,
+        setSelectedPlan,
       }}
     >
       {children}
