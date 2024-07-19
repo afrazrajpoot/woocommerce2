@@ -43,7 +43,7 @@ const AccountForm = () => {
     customerID,
     setCustomerID,
   } = useGlobalContext();
-
+  const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     control,
@@ -75,23 +75,23 @@ const AccountForm = () => {
       const localUser = user?.data?.user || {};
 
       if (user) {
-      //   if (
-      //     data?.username !== localUser.fullName ||
-      //     data?.email !== localUser.email
-      //   ) {
-      //     toast.error("Add login email and username", {
-      //       position: "top-right",
-      //       autoClose: 5000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       theme: "light",
-      //     });
-      //     return;
-      //   }
-       }
+        //   if (
+        //     data?.username !== localUser.fullName ||
+        //     data?.email !== localUser.email
+        //   ) {
+        //     toast.error("Add login email and username", {
+        //       position: "top-right",
+        //       autoClose: 5000,
+        //       hideProgressBar: false,
+        //       closeOnClick: true,
+        //       pauseOnHover: true,
+        //       draggable: true,
+        //       progress: undefined,
+        //       theme: "light",
+        //     });
+        //     return;
+        //   }
+      }
       // if (session?.data) {
       //   if (
       //     data?.username !== sessionUser?.name ||
@@ -126,7 +126,9 @@ const AccountForm = () => {
 
       if (customerID) {
         const idToUpdate = customerID || userFromLocalStorage;
+        setLoading(true);
         await updateWooCommerceData(`wc/v3/customers`, idToUpdate, requestData);
+        setLoading(false);
         toast.success("Updated successfully", {
           position: "top-right",
           autoClose: 5000,
@@ -139,12 +141,15 @@ const AccountForm = () => {
         });
         navigate.push("/");
       } else {
+        setLoading(true);
         const newUser = await CreateWooCommerceData("wc/v3/customers", {
           ...requestData,
           password: "12345678", // Set a default password for new customers
         });
+
         localStorage.setItem("customerID", JSON.stringify(newUser?.id));
         setCustomerID(newUser?.id);
+        setLoading(false);
         toast.success("Created successfully", {
           position: "top-right",
           autoClose: 5000,
@@ -176,7 +181,7 @@ const AccountForm = () => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     setUser(userFromLocal);
   }, []);
-  console.log(user, "useree");
+  // console.log(user, "useree");
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">
@@ -377,7 +382,7 @@ const AccountForm = () => {
             variant="outlined"
             className="text-[2.5vw] lg:text-[0.7vw] sm:text-[1.5vw] text-[#FF387A] border-[1.5px] font-bold border-[#FF387A] hover:border-[#FF387A] lg:py-[0.6vw] py-[2vw] px-[3vw] lg:px-[1vw]"
           >
-            {customerID ? "Update" : "Create"}
+            {`${loading ? "loading...." : customerID ? "Update" : "Create"}`}
           </Button>
         </form>
       </main>

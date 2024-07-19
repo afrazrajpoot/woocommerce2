@@ -23,7 +23,7 @@ export default function OtpModel() {
 
   return (
     <div className="w-full relative">
-      <Button onClick={handleOpen}>Otp modal</Button>
+      {/* <Button onClick={handleOpen}>Otp modal</Button> */}
       <Modal
         open={openOtpModel}
         onClose={handleClose}

@@ -94,8 +94,8 @@ export const forgetForm = [
 ];
 export const resetForm = [
   {
-    label: "Create Password",
-    name: "password",
+    label: "Old Password",
+    name: "oldPassword",
     type: "password",
     placeholder: "Must be at least 8 characters",
     pc: "email",
@@ -110,7 +110,7 @@ export const resetForm = [
   },
   {
     label: "New password",
-    name: "password",
+    name: "newPassword",
     type: "password",
     placeholder: "Must be at least 8 characters",
     pc: "email",

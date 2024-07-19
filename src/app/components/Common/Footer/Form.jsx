@@ -19,7 +19,7 @@ import SignupModel from "../../authModel/register/SignupModel";
 const Form = () => {
   const [register, { isLoading, isError, data, isSuccess }] =
     useSignupUserMutation();
-  const navigate = useRouter();
+
   const {
     handleSubmit,
     control,
@@ -59,6 +59,9 @@ const Form = () => {
   };
   useEffect(() => {
     if (isSuccess) {
+      // localStorage.setItem('userId', data?.data?.id);
+      // console.log(data.user._id, "data signup");
+      localStorage.setItem("userId", JSON.stringify(data.user._id));
       toast.success("Signup successful!", {
         position: "top-right",
         autoClose: 5000,

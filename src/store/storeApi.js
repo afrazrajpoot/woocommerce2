@@ -19,6 +19,14 @@ export const storeApi = createApi({
         body: data,
       }),
     }),
+    submitSubscription: builder.mutation({
+      query: (data) => ({
+        url: "/api/subscription",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Subscription"],
+    }),
     forgotPassword: builder.mutation({
       query: (data) => ({
         url: "/api/user/forgotPassword",
@@ -40,6 +48,19 @@ export const storeApi = createApi({
         body: data,
       }),
     }),
+    getDataById: builder.mutation({
+      query: (data) => ({
+        url: "/api/getSubscriptionData",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateSubscription: builder.mutation({
+      query: (id) => ({
+        url: `/api/getSubscriptionData?id=${id}`,
+        method: "PUT",
+      }),
+    }),
   }),
 });
 
@@ -49,4 +70,7 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useUpdatePasswordMutation,
+  useSubmitSubscriptionMutation,
+  useGetDataByIdMutation,
+  useUpdateSubscriptionMutation,
 } = storeApi;

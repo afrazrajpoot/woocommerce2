@@ -22,6 +22,7 @@ export const UserProvider = ({ children }) => {
     setLogin(false);
     setLoginModel(false);
   }
+  const [limit, setLimit] = useState(5);
   const [logedUsername, setLogedUsername] = useState(null);
   const [login, setLogin] = useState(null);
   const [openLoginModel, setLoginModel] = useState(false);
@@ -35,16 +36,33 @@ export const UserProvider = ({ children }) => {
   const [openOtpModel, setOtpModel] = useState(false);
   const [openResetModel, setResetModel] = useState(false);
   const [otpReset, setOtpReset] = useState();
-  const [dataForResetPassword, setDataForResetPassword] = useState({oldPassword: "", email: "",  otp: "",  newPassword: ""});
+  const [dataForResetPassword, setDataForResetPassword] = useState({
+    oldPassword: "",
+    email: "",
+    otp: "",
+    newPassword: "",
+  });
   const [querySuggestion, setQuerySuggestion] = useState();
+  const [imediatelyUpdateDownload, setImediatelyUpdateDownload] =
+    useState(false);
   const [customerDetails, setCustomerDetails] = useState({
-    username: "", first_name: "", last_name: "", email: "",
-    date_created: "", postcode: "", phone: "", address1: "",
-    city: "", country: "",
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    date_created: "",
+    postcode: "",
+    phone: "",
+    address1: "",
+    city: "",
+    country: "",
   });
   const [customerID, setCustomerID] = useState(null);
   const [loggedUser, setLoggedUser] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState({ price: null, features: [],});
+  const [selectedPlan, setSelectedPlan] = useState({
+    price: null,
+    features: [],
+  });
   const [cart, showCart] = useState(false);
   const toggleSidebar = () => {
     setMobileSidebarOpen((prev) => !prev);
@@ -146,8 +164,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [cartCount]);
 
- 
-
   return (
     <UserContext.Provider
       value={{
@@ -199,6 +215,10 @@ export const UserProvider = ({ children }) => {
         setLogedUsername,
         selectedPlan,
         setSelectedPlan,
+        limit,
+        setLimit,
+        imediatelyUpdateDownload,
+        setImediatelyUpdateDownload,
       }}
     >
       {children}

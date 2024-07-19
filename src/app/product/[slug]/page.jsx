@@ -17,10 +17,17 @@ import Loading from "@/app/components/Common/Loading";
 import Drawer from "@mui/material/Drawer";
 import ChechoutDrawer from "@/app/components/ChechoutDrawer";
 import { toast } from "sonner";
+import {
+  useGetDataByIdMutation,
+  useGetDataByIdQuery,
+  useUpdateSubscriptionMutation,
+} from "@/store/storeApi";
+import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ params: { slug } }) => {
   const [productDetails, setProductDetails] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [id, setId] = useState(0);
   const {
     fetchWooCommerceData,
     setCartCount,
@@ -30,10 +37,21 @@ const ProductDetails = ({ params: { slug } }) => {
     setOpenCartDrawer,
     productsAddedToCart,
     setProductsAddedToCart,
+    customerDetails,
+    CreateWooCommerceData,
+    customerID,
+    limit,
+    setLimit,
   } = useGlobalContext();
 
   const [subtotal, setSubtotal] = React.useState(0);
-
+  const [loading, setLoading] = useState(false);
+  const [getSubscriptionData, { isError, isLoading, data: subscriptionData }] =
+    useGetDataByIdMutation();
+  const [
+    updateLimit,
+    { isError: limitError, isLoading: limitLoading, data: limitData },
+  ] = useUpdateSubscriptionMutation();
   useEffect(() => {
     const calculateSubtotal = () => {
       let total = 0;
@@ -101,6 +119,8 @@ const ProductDetails = ({ params: { slug } }) => {
     if (slug) {
       fetchProducts();
     }
+    const subscriptionId = localStorage.getItem("subId");
+    setId(subscriptionId);
   }, [slug]);
 
   if (!productDetails) {
@@ -130,6 +150,133 @@ const ProductDetails = ({ params: { slug } }) => {
       { breakpoint: 640, settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
+
+  // console.log(productDetails, "my single products");
+  const fetchOrder = async (data) => {
+    try {
+      setLoading(true);
+      const response = await CreateWooCommerceData(`wc/v3/orders`, data);
+      setLoading(false);
+      // console.log(response, "subscriptionorder");
+    } catch (err) {
+      toast.error(err.message);
+      setLoading(false);
+      // console.log(err.message);
+    }
+  };
+  const navigate = useRouter();
+  function createSubscriptionOrder() {
+    //   product_id: item.id,
+    //   name: item.name,
+    //   quantity: item.quantity,
+    //   price: item.unit_amount.value,
+    //   subtotal: item.unit_amount.value,
+    //   total: item.unit_amount.value,
+    //   taxes: [],
+    //   meta_data: [],
+    //   sku: checkoutDetail?.[0]?.sku || null,
+    //   image: checkoutDetail?.[0]?.images?.[0]?.src
+    //     ? {
+    //         id: 0,
+    //         src:
+    //           checkoutDetail?.[0]?.images?.[0]?.src +
+    //           " " +
+    //           checkoutDetail[0].downloads[0].id,
+    //       }
+    //     : null,
+    // }));
+    const lineItems = [
+      {
+        product_id: productDetails?.id,
+        name: `${productDetails.categories[0]?.name} && ${productDetails.categories[1]?.name}`,
+        quantity: 1,
+        price: "0", // Ensure price is a string if required
+        subtotal: "0", // Convert to string
+        total: "0", // Convert to string
+        taxes: [],
+        meta_data: [],
+        sku: productDetails?.[0]?.sku || "", // Ensure sku is a string, even if it's empty
+        image: {
+          src: productDetails?.images?.[0]?.src || "", // Ensure image is an object
+        },
+      },
+    ];
+
+    // console.log(lineItems, "lineItems2");
+    // console.log(customerDetails, "customerDetails");
+    fetchOrder({
+      payment_method: "paypal",
+      payment_method_title: "PayPal",
+      set_paid: true,
+      customer_id: customerID,
+      billing: {
+        first_name: customerDetails?.first_name,
+        last_name: customerDetails?.last_name,
+        address_1: customerDetails?.address1,
+        address_2: productDetails?.downloads[0].id,
+        city: customerDetails?.city,
+        state: customerDetails?.country,
+        postcode: customerDetails?.postcode,
+        country: customerDetails?.country,
+        email: customerDetails?.email,
+        phone: customerDetails?.phone,
+      },
+      shipping: {
+        first_name: customerDetails?.first_name,
+        last_name: customerDetails?.last_name,
+        address_1: customerDetails?.address1,
+        address_2: productDetails?.downloads[0].id,
+        city: customerDetails?.city,
+        state: customerDetails?.country,
+        postcode: customerDetails?.postcode,
+        country: customerDetails?.country,
+      },
+      line_items: lineItems,
+      shipping_lines: [
+        {
+          method_id: "flat_rate",
+          method_title: "Flat Rate",
+          total: "10.00",
+        },
+      ],
+    });
+  }
+  async function hanldeSubscription() {
+    try {
+      const res = await getSubscriptionData({ id: id });
+      // console.log(res.data.subscription, "myData2");
+      const limit = res.data.subscription?.downloadLimit;
+      const lastDate = res.data.subscription?.endDate;
+
+      await updateLimit(id);
+      if (limit <= 0) {
+        toast.error(
+          "No more downloads available please get subscription pack",
+          {
+            position: "top-right",
+          }
+        );
+        return;
+      }
+      if (lastDate > new Date()) {
+        toast.error("Your subscription is expired", {
+          position: "top-right",
+        });
+        return;
+      }
+
+      createSubscriptionOrder();
+      toast.success("Order create", {
+        position: "top-right",
+      });
+      setImediatelyUpdateDownload(true);
+      navigate.push("/downloads");
+      // console.log(res.data.subscription, "myData2");
+    } catch (err) {
+      toast.error("Network failed please try again");
+    }
+  }
+  // console.log(typeof +subscriptionLimit, "myLimit");
   return (
     <>
       <main className="w-full relative overflow-x-hidden">
@@ -149,16 +296,23 @@ const ProductDetails = ({ params: { slug } }) => {
             </Button>
           </section>
           <section className="w-full flex flex-col lg:flex-row items-start max-w-[90vw] mx-auto mt-[10vw] sm:mt-[5vw] lg:mt-[2vw]">
-         {mainVideo?.videos?.[0] || extractedContent?.videos?.[0] ?   <iframe
-              src={mainVideo?.videos?.[0] || extractedContent?.videos?.[0]}
-              className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
-              alt="image"
-              allowFullScreen
-            /> : <img
-            src={extractedContent?.images?.[0]?.src || productDetails.images[0]?.src}
-            alt="store details"
-            className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
-          />}
+            {mainVideo?.videos?.[0] || extractedContent?.videos?.[0] ? (
+              <iframe
+                src={mainVideo?.videos?.[0] || extractedContent?.videos?.[0]}
+                className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
+                alt="image"
+                allowFullScreen
+              />
+            ) : (
+              <img
+                src={
+                  extractedContent?.images?.[0]?.src ||
+                  productDetails.images[0]?.src
+                }
+                alt="store details"
+                className="w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[35vw] sm:max-w-[85vw] lg:max-w-[60vw]"
+              />
+            )}
             <aside className="w-full mt-[10vw] sm:mt-[8vw] lg:mt-0 sm:max-w-[80vw] lg:max-w-[24vw] lg:ml-[2vw]">
               <section className="w-full shadow-md ml-[2vw] p-[5vw] lg:p-[1vw] rounded-lg">
                 <nav className="flex items-center justify-between p-[2vw] md:p-[1vw]">
@@ -188,11 +342,11 @@ const ProductDetails = ({ params: { slug } }) => {
                   Add to cart
                 </Button>
                 <Button
-                  onClick={() => setOpenCartDrawer(true)}
+                  onClick={hanldeSubscription}
                   variant="contained"
                   className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
                 >
-                  Buy now
+                  {loading ? "Loading..." : "BUY NOW"}
                 </Button>
                 <section className="flex border-t-[1px] border-[#E5E5E5] mt-[3vw] lg:mt-[1vw] items-center justify-between p-[1vw]">
                   <p className="text-[#171717] font-medium text-[4vw] sm:text-[2vw] lg:text-[1vw]">
@@ -259,7 +413,7 @@ const ProductDetails = ({ params: { slug } }) => {
                 </main>
               ))}
             </main>
-              <h1 className="text-[#171717] text-[5vw] md:text-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] font-semibold">
+            <h1 className="text-[#171717] text-[5vw] md:text-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] font-semibold">
               Overview
             </h1>
             <p className="text-[#171717] text-[4vw] sm:text-[2vw] lg:text-[1vw] mt-[1vw]">
@@ -282,13 +436,15 @@ const ProductDetails = ({ params: { slug } }) => {
               point, and many other parameters. How? Check out this video
               review.
             </p>
-            {extractedContent?.images?.[0] && <Image
-              src={extractedContent?.images?.[0]?.src}
-              width={1000}
-              height={1000}
-              alt="store details"
-              className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-            />}
+            {extractedContent?.images?.[0] && (
+              <Image
+                src={extractedContent?.images?.[0]?.src}
+                width={1000}
+                height={1000}
+                alt="store details"
+                className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
+              />
+            )}
             <p className="text-[#171717] text-[4.3vw] sm:text-[2.3vw] lg:text-[1.3vw] mt-[10vw] sm:mt-[3vw] lg:mt-[1vw]">
               What resolution projects are supported
             </p>
@@ -299,34 +455,34 @@ const ProductDetails = ({ params: { slug } }) => {
               with any aspect ratio in the frame, such as portrait 9:16
             </p>
             {extractedContent.images?.length > 2 ? (
-             <>
-              {extractedContent?.images?.slice(1)?.map((image, i) => (
-                <Image
-                  key={i}
-                  src={image?.src}
-                  width={1000}
-                  height={1000}
-                  alt="store details"
-                  className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-                />
-              ))}
-             </>
-              
+              <>
+                {extractedContent?.images?.slice(1)?.map((image, i) => (
+                  <Image
+                    key={i}
+                    src={image?.src}
+                    width={1000}
+                    height={1000}
+                    alt="store details"
+                    className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
+                  />
+                ))}
+              </>
             ) : (
               <>
-              {extractedContent?.videos?.slice(2, 9).map((video, index) => (
-                <main key={index}>
-                  <iframe
-                    className="rounded-[0.8vw] mt-[10vw] sm:mt-[6vw] lg:mt-[3vw] w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[50vw] sm:max-w-[85vw] lg:max-w-[100%]"
-                    key={index}
-                    src={video}
-                    width={1000}
-                  height={1000}
-                    alt="store details"
-                    allowFullScreen
-                  />
-                </main>
-              ))}</>
+                {extractedContent?.videos?.slice(2, 9).map((video, index) => (
+                  <main key={index}>
+                    <iframe
+                      className="rounded-[0.8vw] mt-[10vw] sm:mt-[6vw] lg:mt-[3vw] w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[50vw] sm:max-w-[85vw] lg:max-w-[100%]"
+                      key={index}
+                      src={video}
+                      width={1000}
+                      height={1000}
+                      alt="store details"
+                      allowFullScreen
+                    />
+                  </main>
+                ))}
+              </>
             )}
           </article>
           <aside className="w-full lg:max-w-[24vw] p-[2vw] mt-[10vw] sm:mt-[5vw] lg:mt-[2vw] border-[1px] border-[525252] rounded-lg lg:ml-[2vw]">

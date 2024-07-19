@@ -11,6 +11,8 @@ import { Drawer } from "@mui/material";
 import ChechoutDrawer from "./components/ChechoutDrawer";
 import ForgetModel from "./components/authModel/forgotPassword/ForgetModel";
 import AuthProvider from "@/authProvider/AuthProvider";
+import OtpModel from "./components/authModel/otp/OtpModel";
+import ResetModel from "./components/authModel/resetModal/ResetModel";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -36,6 +38,8 @@ export default function RootLayout({ children }) {
               <Toaster />
               {children}
               <SigninModel />
+              <OtpModel />
+              <ResetModel />
               <SignupModel />
               <ForgetModel />
               <ChechoutDrawer />

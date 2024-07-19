@@ -8,21 +8,28 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Link from "next/link";
 import { loadScript } from "@paypal/paypal-js";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [checkoutDetail, setCheckoutDetail] = useState();
+  const [active, setActive] = useState(false);
+  const [navigation, setNavigation] = useState(false);
+  const navigate = useRouter();
   const {
     productsAddedToCart,
     customerDetails,
     CreateWooCommerceData,
     customerID,
+    setImediatelyUpdateDownload,
   } = useGlobalContext();
   const fetchOrder = async (data) => {
     try {
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
       // console.log(response, "respoooooone");
     } catch (err) {
-      toast.error(err.message);
+      toast.error("Network fail please try again later", {
+        position: "top-right",
+      });
       // console.log(err.message);
     }
   };
@@ -162,8 +169,9 @@ const page = () => {
                     },
                   ],
                 });
-
-                toast.success("Payment successful", {
+                setNavigation(true);
+                setActive(true);
+                toast.success("Order created", {
                   position: "top-right",
                   autoClose: 3000,
                   hideProgressBar: false,
@@ -188,6 +196,7 @@ const page = () => {
               });
             },
             onError: (err) => {
+              console.log(err, "error");
               toast.error("Payment error", {
                 position: "top-right",
                 autoClose: 3000,
@@ -205,7 +214,29 @@ const page = () => {
       }
     );
   }
-
+  const handlePayment = () => {
+    if (customerID) {
+      paymentMethod();
+      return;
+    }
+    toast.error("Please register your account", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    navigate.push("/accountdetails");
+  };
+  useEffect(() => {
+    if (navigation) {
+      navigate.push("/downloads");
+      setImediatelyUpdateDownload(true);
+    }
+  }, [navigation]);
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">
       <section className="lg:translate-y-[5vw] sm:translate-y-[10vw] translate-y-[20vw] p-[2vw] w-full max-w-[90vw] m-auto">
@@ -220,7 +251,7 @@ const page = () => {
         </Link>
         <section className="flex lg:flex-row flex-col mt-[3vw] ml-[-9.5vw]">
           <article className="w-full max-w-[70vw] flex flex-col gap-[2vw] mt-[5vw] sm:mt-[7vw] lg:mt-[0vw]">
-            <Steper />
+            <Steper active={active} />
             <div className="bg-white border-[1px] border-[#F5F5F5] mt-[8vw] lg:rounded-lg  sm:mt-[5vw] lg:w-[50vw] lg:p-[1vw] lg:ml-[10vw] ml-[7vw] p-[4vw] w-[90vw] rounded-xl lg:mt-[1vw]">
               <p className="font-bold lg:text-[1.5vw] text-[5vw] sm:text-[3vw]">
                 {" "}
@@ -332,7 +363,7 @@ const page = () => {
                 type="submit"
                 size="large"
                 className="w-full lg:mt-[1.5vw] mt-[3vw] sm:text-[1.5vw] text-[2.5vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
-                onClick={paymentMethod}
+                onClick={handlePayment}
               >
                 Contnue to Payment
               </Button>

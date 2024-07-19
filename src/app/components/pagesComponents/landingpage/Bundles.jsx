@@ -20,10 +20,10 @@ const Bundles = () => {
 
       setBundleData(resp.data);
     } catch (error) {
-      toast.error("Error fetching products:", error.message);
+      toast.error("Network fail  try again later :", {
+        position: "top-center",
+      });
     }
-    
-
   };
   const CustomPrevArrow = ({ style, onClick }) => (
     <span
@@ -77,11 +77,11 @@ const Bundles = () => {
         <Slider {...settings}>
           {bundleData?.map((bundle, index) => (
             <Link
-               href={`/product/${bundle.slug}`}
-               key={index}
-               className="w-full px-[1vw]"
-             >
-            <BundleCard key={index} {...bundle} />
+              href={`/product/${bundle.slug}`}
+              key={index}
+              className="w-full px-[1vw]"
+            >
+              <BundleCard key={index} {...bundle} />
             </Link>
           ))}
         </Slider>
