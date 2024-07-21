@@ -42,9 +42,8 @@ export const UserProvider = ({ children }) => {
     otp: "",
     newPassword: "",
   });
-  const [querySuggestion, setQuerySuggestion] = useState();
-  const [imediatelyUpdateDownload, setImediatelyUpdateDownload] =
-    useState(false);
+const [state,setState] = useState(false)
+  const [cartDetail, setCartDetail] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({
     username: "",
     first_name: "",
@@ -77,8 +76,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      toast.error("Error fetching WooCommerce data:", error.message);
-      throw error;
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -90,8 +90,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      toast.error("Error creating WooCommerce data:", error.message);
-      throw error;
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -104,8 +105,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error updating WooCommerce data:", error.message);
-      throw error;
+      console.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
   useEffect(() => {
@@ -209,16 +211,17 @@ export const UserProvider = ({ children }) => {
         setDataForResetPassword,
         cart,
         showCart,
-        querySuggestion,
-        setQuerySuggestion,
+
         logedUsername,
         setLogedUsername,
         selectedPlan,
         setSelectedPlan,
         limit,
         setLimit,
-        imediatelyUpdateDownload,
-        setImediatelyUpdateDownload,
+        state,
+        setState,
+        cartDetail,
+        setCartDetail,
       }}
     >
       {children}

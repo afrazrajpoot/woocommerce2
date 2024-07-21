@@ -31,20 +31,24 @@ const ChechoutDrawer = () => {
     localStorage.setItem("productsAddedToCart", JSON.stringify(updatedCart));
   };
   const {
-    fetchWooCommerceData,
     setCartCount,
-    openCartDrawer,
+
     cart,
     showCart,
-    setOpenCartDrawer,
+
     productsAddedToCart,
     setProductsAddedToCart,
     cartCount,
+    cartDetail,
+    setCartDetail,
+    
   } = useGlobalContext();
   const [totalPrice, setTotalPrice] = useState(subtotal);
 
   const navigate = useRouter();
   function addCheckoutDetail() {
+    showCart(false);
+
     navigate.push("/checkout");
   }
 
@@ -89,24 +93,35 @@ const ChechoutDrawer = () => {
               className="w-full flex items-start pb-[0.7vw] border-b-[0.15vw] border-[#F5F5F5] "
               key={index}
             >
-              <img
-                src={item?.images?.[0]?.src}
-                alt={item?.name}
-                className="w-full object-cover max-w-[10vw] lg:max-w-[6vw] h-[5vw]  lg:h-[4vw] rounded-[1vw]"
-              />
+              {!cartDetail && (
+                <img
+                  src={item?.images?.[0]?.src}
+                  alt={item?.name}
+                  className="w-full object-cover max-w-[10vw] lg:max-w-[6vw] h-[5vw]  lg:h-[4vw] rounded-[1vw]"
+                />
+              )}
               <section className="ml-[1vw]">
                 {/* toSubString(0, 10) */}
                 <h2 className="lg:text-[1vw] text-[2vw] font-medium text-[#171717]">
-                  {item?.name?.slice(0, 30)}...
+                  {cartDetail ? "" : item?.name?.slice(0, 30)}...
                 </h2>
                 <div className="flex items-center justify-between">
                   <p className="text-[1vw]">
-                    ${item?.sale_price ? item?.sale_price : item?.regular_price}
+                    $
+                    {cartDetail
+                      ? ""
+                      : item?.sale_price
+                      ? item?.sale_price
+                      : item?.regular_price}
                   </p>
-                  <DeleteIcon
-                    className="cursor-pointer text-[#F87171] text-[3vw] lg:text-[1vw]"
-                    onClick={() => removeFromCartHandler(index)}
-                  />
+                  {cartDetail ? (
+                    ""
+                  ) : (
+                    <DeleteIcon
+                      className="cursor-pointer text-[#F87171] text-[3vw] lg:text-[1vw]"
+                      onClick={() => removeFromCartHandler(index)}
+                    />
+                  )}
                 </div>
               </section>
             </aside>
@@ -129,7 +144,7 @@ const ChechoutDrawer = () => {
           <section className="flex justify-between mt-[1vw]">
             <h2 className="font-medium text-[2vw] lg:text-[1vw]">Subtotal</h2>
             <p className="font-medium text-[#FF387A] text-[2vw] lg:text-[1vw]">
-              {subtotal}$
+              {cartDetail ? "0" : subtotal}$
             </p>
           </section>
 

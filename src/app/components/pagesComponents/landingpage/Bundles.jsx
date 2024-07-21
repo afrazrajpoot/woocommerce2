@@ -21,7 +21,7 @@ const Bundles = () => {
       setBundleData(resp.data);
     } catch (error) {
       toast.error("Network fail  try again later :", {
-        position: "top-center",
+        position: "top-right",
       });
     }
   };

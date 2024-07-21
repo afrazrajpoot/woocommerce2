@@ -32,7 +32,7 @@ const Page = () => {
   ];
 
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const [subId, setSubId] = useState("");
+
   const [setSubscription, { isError, isLoading, data, isSuccess }] =
     useSubmitSubscriptionMutation();
   const { selectedPlan, customerID, customerDetails } = useGlobalContext();
@@ -46,8 +46,9 @@ const Page = () => {
       const res = await setSubscription({
         username: customerDetails?.username,
         email: customerDetails?.email,
-        downloadLimit: 1,
+        downloadLimit: 0,
         price: selectedPlan.price,
+        available: selectedPlan.available,
       });
     } catch (err) {
       toast.error("Network failed please try again");
@@ -130,7 +131,7 @@ const Page = () => {
               });
             },
             onError: (err) => {
-              toast.error("Payment error", {
+              toast.error("Payment insufficiant amount 0 ", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -150,6 +151,7 @@ const Page = () => {
   const handlePayment = () => {
     if (customerID) {
       paymentMethod();
+
       return;
     }
     toast.error("Please register your account", {
@@ -164,18 +166,14 @@ const Page = () => {
     });
     navigate.push("/accountdetails");
   };
-  const product = {
-    title: "Sample Product",
-    description: "This is a sample product description.",
-    price: "10.00",
-    image: "/path/to/image.jpg",
-  };
+
   useEffect(() => {
     if (isSuccess) {
       // console.log(data.subscription._id, "myData");
       localStorage.setItem("subId", data.subscription._id);
     }
   }, [isSuccess]);
+
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">
       <section className="lg:translate-y-[5vw] sm:translate-y-[10vw] translate-y-[20vw] p-[2vw] w-full max-w-[90vw] m-auto">

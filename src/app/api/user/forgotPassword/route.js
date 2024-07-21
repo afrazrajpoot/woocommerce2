@@ -15,8 +15,8 @@ const sendEmail = async (to, subject, text) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "shany.kunze57@ethereal.email",
-        pass: "uyknh7TUWZuM93VhNT",
+        user: "rebecca32@ethereal.email",
+        pass: "bQJZNfAv89ssdHtXVm",
       },
     });
 
@@ -28,7 +28,7 @@ const sendEmail = async (to, subject, text) => {
       text: text, // plain text body
     });
 
-    console.log("Message sent: %s", info.messageId);
+    // console.log("Message sent: %s", info.messageId);
     return info;
   } catch (error) {
     console.error("Error sending email: %s", error);

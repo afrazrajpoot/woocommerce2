@@ -7,7 +7,7 @@ import MobileSidebar from "./components/Common/Sidebar/MobileSidebar";
 import Providers from "@/redux/Providers";
 import SignupModel from "./components/authModel/register/SignupModel";
 import { Toaster } from "sonner";
-import { Drawer } from "@mui/material";
+
 import ChechoutDrawer from "./components/ChechoutDrawer";
 import ForgetModel from "./components/authModel/forgotPassword/ForgetModel";
 import AuthProvider from "@/authProvider/AuthProvider";

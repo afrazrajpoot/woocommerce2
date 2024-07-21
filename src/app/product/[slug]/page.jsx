@@ -14,8 +14,7 @@ import Footer from "@/app/components/Common/Footer/Footer";
 import { useGlobalContext } from "@/context/globalState";
 import { extractContent } from "@/app/utils/extractContent";
 import Loading from "@/app/components/Common/Loading";
-import Drawer from "@mui/material/Drawer";
-import ChechoutDrawer from "@/app/components/ChechoutDrawer";
+
 import { toast } from "sonner";
 import {
   useGetDataByIdMutation,
@@ -31,17 +30,17 @@ const ProductDetails = ({ params: { slug } }) => {
   const {
     fetchWooCommerceData,
     setCartCount,
-    openCartDrawer,
-    cart,
+
     showCart,
-    setOpenCartDrawer,
+
     productsAddedToCart,
     setProductsAddedToCart,
     customerDetails,
     CreateWooCommerceData,
     customerID,
-    limit,
-    setLimit,
+    state,
+    setState,
+    setCartDetail,
   } = useGlobalContext();
 
   const [subtotal, setSubtotal] = React.useState(0);
@@ -99,7 +98,9 @@ const ProductDetails = ({ params: { slug } }) => {
       setProductDetails(product);
       fetchRelatedProducts(product?.related_ids);
     } catch (error) {
-      toast.error("Error fetching products:", error);
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -111,7 +112,9 @@ const ProductDetails = ({ params: { slug } }) => {
       // console.log(relatedProductsData, "relatedProductsData");
       setRelatedProducts(relatedProductsData);
     } catch (error) {
-      toast.error("Error fetching related products:", error);
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -159,14 +162,15 @@ const ProductDetails = ({ params: { slug } }) => {
       setLoading(false);
       // console.log(response, "subscriptionorder");
     } catch (err) {
-      toast.error(err.message);
+      toast.error("Please get subscription", {
+        position: "top-right",
+      });
       setLoading(false);
       // console.log(err.message);
     }
   };
   const navigate = useRouter();
   function createSubscriptionOrder() {
-    //   product_id: item.id,
     //   name: item.name,
     //   quantity: item.quantity,
     //   price: item.unit_amount.value,
@@ -242,40 +246,36 @@ const ProductDetails = ({ params: { slug } }) => {
     });
   }
   async function hanldeSubscription() {
-    try {
-      const res = await getSubscriptionData({ id: id });
-      // console.log(res.data.subscription, "myData2");
-      const limit = res.data.subscription?.downloadLimit;
-      const lastDate = res.data.subscription?.endDate;
+    const res = await getSubscriptionData({ id: id });
+    // console.log(res.data.subscription, "myData2");
+    const limit = res.data?.subscription?.downloadLimit;
+    const lastDate = res.data?.subscription?.endDate;
 
-      await updateLimit(id);
-      if (limit <= 0) {
-        toast.error(
-          "No more downloads available please get subscription pack",
-          {
-            position: "top-right",
-          }
-        );
-        return;
-      }
-      if (lastDate > new Date()) {
-        toast.error("Your subscription is expired", {
-          position: "top-right",
-        });
-        return;
-      }
-
-      createSubscriptionOrder();
-      toast.success("Order create", {
+    await updateLimit(id);
+    if (limit <= 0) {
+      toast.error("No more downloads available please get subscription pack", {
         position: "top-right",
       });
-      setImediatelyUpdateDownload(true);
-      navigate.push("/downloads");
-      // console.log(res.data.subscription, "myData2");
-    } catch (err) {
-      toast.error("Network failed please try again");
+      return;
     }
+    if (lastDate > new Date()) {
+      toast.error("Your subscription is expired", {
+        position: "top-right",
+      });
+      return;
+    }
+
+    createSubscriptionOrder();
+
+    if (createSubscriptionOrder()) {
+      toast.success("Order create successfully", {
+        position: "top-right",
+      });
+      navigate.push("/downloads");
+    }
+    // console.log(res.data.subscription, "myData2");
   }
+
   // console.log(typeof +subscriptionLimit, "myLimit");
   return (
     <>
@@ -333,6 +333,7 @@ const ProductDetails = ({ params: { slug } }) => {
                 <Button
                   onClick={() => {
                     addToCartHandler(productDetails);
+                    setCartDetail(false);
                     // setOpenCartDrawer(true);
                     showCart(true);
                   }}
@@ -398,13 +399,13 @@ const ProductDetails = ({ params: { slug } }) => {
             </aside>
           </section>
         </nav>
-        <section className="w-full flex flex-col lg:flex-row items-start max-w-[90vw] mx-auto mt-[10vw] sm:mt-[5vw] lg:mt-[2vw]">
+        <section className="w-full flex flex-col lg:gap-[3vw] lg:flex-row items-start max-w-[90vw] mx-auto mt-[10vw] sm:mt-[5vw] lg:mt-[2vw]">
           <article className="w-full lg:max-w-[70vw]">
-            <main className="flex flex-col lg:flex-row items-start justify-evenly w-full">
+            <main className="flex flex-col lg:flex-col lg:gap-[5vw] items-start justify-evenly w-full">
               {extractedContent?.videos?.slice(0, 2).map((video, index) => (
                 <main key={index} className="w-full">
                   <iframe
-                    className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[30vw] sm:max-w-[85vw] lg:max-w-[31vw] "
+                    className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[30vw] sm:max-w-[85vw] lg:max-w-[41vw]"
                     key={index}
                     src={video}
                     alt="store details"

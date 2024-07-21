@@ -4,7 +4,7 @@ import Subscription from "../../../models/subscription";
 import { NextResponse } from "next/server";
 connection();
 export async function POST(req) {
-  const { username, email, price, downloadLimit } = await req.json();
+  const { username, email, price, downloadLimit, available } = await req.json();
 
   const subscription = new Subscription({
     username: username, // Replace with actual username
@@ -15,7 +15,13 @@ export async function POST(req) {
     downloadLimit: downloadLimit,
     price: price, // Subscription price
   });
-
+  if (available === "1d") {
+    subscription.downloadLimit = 1;
+  } else if (available === "month") {
+    subscription.downloadLimit = 5;
+  } else if (available === "year") {
+    subscription.downloadLimit = 10;
+  }
   await subscription.save();
   return NextResponse.json(
     { success: true, subscription: subscription },
@@ -46,4 +52,3 @@ export async function PUT(req, res) {
     );
   }
 }
-

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -18,6 +19,7 @@ const style = {
 };
 
 export default function SuccessPaymentModel({ success }) {
+  const navigate = useRouter();
   const [open, setOpen] = React.useState(success);
 
   React.useEffect(() => {
@@ -25,7 +27,7 @@ export default function SuccessPaymentModel({ success }) {
       setOpen(true);
       const timer = setTimeout(() => {
         setOpen(false);
-      }, 1200000); // Close after 20 minutes
+      }, 120000); // Close after 20 minutes
 
       return () => clearTimeout(timer); // Cleanup timer on component unmount
     }
@@ -67,6 +69,7 @@ export default function SuccessPaymentModel({ success }) {
 
           <div className="w-full flex justify-center">
             <Button
+              onClick={() => navigate.push("/store")}
               variant="outlined"
               className="mt-[2.5vw] p-[1vw]"
               sx={{

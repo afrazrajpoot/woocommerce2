@@ -62,7 +62,9 @@ const Store = () => {
       setTotalPages(Math.ceil(totalProducts / itemsPerPage));
       setProducts(data);
     } catch (error) {
-      toast.error("Error fetching products:", error.message);
+      toast.error("Network error please try again later:", {
+        position: "top-right",
+      });
     }
   };
 

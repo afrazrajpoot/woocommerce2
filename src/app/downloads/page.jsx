@@ -39,8 +39,7 @@ const DownloadProduct = ({
 };
 
 const Page = () => {
-  const { customerID, fetchWooCommerceData, imediatelyUpdateDownload } =
-    useGlobalContext();
+  const { customerID, fetchWooCommerceData, state } = useGlobalContext();
   const [fetchedPersonalOrders, setFetchedPersonalOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -64,7 +63,7 @@ const Page = () => {
     } else {
       setLoading(false);
     }
-  }, [customerID, fetchWooCommerceData, imediatelyUpdateDownload]);
+  }, [customerID, state]);
 
   return (
     <main className="bg-[#FAFAFA] w-full max-h-[500vh]">

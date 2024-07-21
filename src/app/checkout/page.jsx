@@ -20,7 +20,8 @@ const page = () => {
     customerDetails,
     CreateWooCommerceData,
     customerID,
-    setImediatelyUpdateDownload,
+    setState,
+    cartDetail,setCartDetail
   } = useGlobalContext();
   const fetchOrder = async (data) => {
     try {
@@ -169,8 +170,12 @@ const page = () => {
                     },
                   ],
                 });
+                localStorage.removeItem("productsAddedToCart");
+                localStorage.removeItem("checkout");
                 setNavigation(true);
+                setCartDetail(true)
                 setActive(true);
+                setState(true)
                 toast.success("Order created", {
                   position: "top-right",
                   autoClose: 3000,
@@ -234,7 +239,8 @@ const page = () => {
   useEffect(() => {
     if (navigation) {
       navigate.push("/downloads");
-      setImediatelyUpdateDownload(true);
+
+     
     }
   }, [navigation]);
   return (
@@ -339,11 +345,11 @@ const page = () => {
                     key={ind}
                   >
                     <p className="font-medium lg:text-[0.9vw] sm:text-[2vw] text-[3.5vw]">
-                      {product?.name}
+                     {cartDetail?"":product?.name}
                     </p>
                     <p className="lg:text-[1vw] text-[2.5vw] font-bold lg:font-medium sm:text-[1.5vw] text-[#FF689A]">
                       $
-                      {product?.sale_price
+                      {cartDetail?"":product?.sale_price
                         ? product?.sale_price
                         : product?.regular_price}
                     </p>
@@ -356,7 +362,7 @@ const page = () => {
                   Subtotal
                 </p>
                 <p className="text-[#FF689A] font-bold lg:font-semibold lg:text-[1vw] text-[2.5vw] sm:text-[1.5vw] lg:mt-[0vw] mt-[3vw]">
-                  ${totalPrice}
+                  ${cartDetail?"0":totalPrice}
                 </p>
               </div>
               <Button
