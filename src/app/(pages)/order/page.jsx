@@ -9,23 +9,22 @@ import Box from "@mui/material/Box";
 
 const Page = () => {
   const [data, setData] = useState({});
+
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const { fetchWooCommerceData } = useGlobalContext();
-
-  const fetchOrder = async () => {
-    try {
-      const res = await fetchWooCommerceData("wc/v3/orders/51785");
-      setData(res);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  const { fetchWooCommerceData, customerID } = useGlobalContext();
 
   useEffect(() => {
-    fetchOrder();
-  }, []);
-
+    if (customerID && customerID !== "null") {
+      const orders = fetchWooCommerceData(
+        `wc/v3/orders/?customer=${customerID}`
+      );
+      orders.then((data) => {
+        setData(data);
+      });
+    }
+  }, [customerID]);
+  console.log(data);
   const handleOpen = (order) => {
     setSelectedOrder(order);
     setOpen(true);

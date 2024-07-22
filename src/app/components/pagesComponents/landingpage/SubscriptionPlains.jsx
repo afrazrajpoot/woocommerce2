@@ -1,72 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import SubscriptionCard from "../../Cards/SubscriptionCard";
 import { subscriptionPlans } from "@/data/data";
-import { loadScript } from "@paypal/paypal-js";
-import { toast } from "sonner";
+import { useGlobalContext } from "@/context/globalState";
+import { useRouter } from "next/navigation";
 
 const SubscriptionPlans = () => {
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  useEffect(() => {
-    if (selectedPlan !== null) {
-      const containerId = `paypal-button-container-${selectedPlan.index}`;
-      paymentMethod(selectedPlan.price, containerId);
-    }
-  }, [selectedPlan]);
+  const navigate = useRouter();
+  const { selectedPlan, setSelectedPlan } = useGlobalContext();
 
-  const paymentMethod = (price, containerId) => {
-    // Clear the container before rendering PayPal buttons
-    document.getElementById(containerId).innerHTML = "";
-    loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
-      (paypal) => {
-        paypal
-          .Buttons({
-            createOrder: (data, actions) => {
-              return actions.order.create({
-                purchase_units: [
-                  {
-                    amount: {
-                      currency_code: "USD",
-                      value: parseFloat(price).toFixed(2),
-                    },
-                  },
-                ],
-              });
-            },
-            onApprove: (data, actions) => {
-              // Handle approval
-              toast.success("Payment success", {
-                position: "top-right",
-              });
-            },
-            onCancel: (data) => {
-              // Handle cancellation
-            },
-            onError: (err) => {
-              // Handle errors
-              toast.error("Payment error", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
-            },
-          })
-          .render(`#${containerId}`);
-      }
-    );
-  };
-  const handlePlanSelect = (index, price) => {
-    // Clear previous PayPal button container
-    if (selectedPlan !== null) {
-      const prevContainerId = `paypal-button-container-${selectedPlan.index}`;
-      document.getElementById(prevContainerId).innerHTML = "";
-    }
-
-    setSelectedPlan({ index, price });
+  const handlePlanSelect = (index, price, features) => {
+    const newSelectedPlan = { index, price, features };
+    setSelectedPlan(newSelectedPlan);
+    navigate.push("/payment");
+    // console.log("Selected Plan Details:", selectedPlan);
   };
 
   return (
@@ -83,12 +29,20 @@ const SubscriptionPlans = () => {
           <div key={index}>
             <SubscriptionCard
               {...plan}
-              paymentMethod={() => handlePlanSelect(index, plan.price)}
-              paypalContainerId={`paypal-button-container-${index}`}
+              paymentMethod={() =>
+                handlePlanSelect(index, plan.price, plan.features)
+              }
             />
-            {selectedPlan && selectedPlan.index === index && (
-              <div id={`paypal-button-container-${index}`}></div>
-            )}
+            {/* {selectedPlan && selectedPlan.index === index && (
+              <div>
+                Selected Plan: ${selectedPlan.price}
+                <ul>
+                  {selectedPlan.features.map((feature, i) => (
+                    <li key={i}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            )} */}
           </div>
         ))}
       </section>

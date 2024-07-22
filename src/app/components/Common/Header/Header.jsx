@@ -17,6 +17,7 @@ const Header = () => {
     setSignupModel,
     showCart,
     logedUsername,
+    customerDetails,
   } = useGlobalContext();
 
   const [userName, setUserName] = useState("Guest");
@@ -33,10 +34,11 @@ const Header = () => {
     : headerData;
 
   useEffect(() => {
+    if (customerDetails) {
+      setUserName(customerDetails?.username);
+    }
     if (session?.user?.name) {
       setUserName(session.user.name);
-    } else {
-      setUserName("Guest");
     }
   }, [session]);
 
@@ -91,7 +93,11 @@ const Header = () => {
                 alt="profile icon"
                 className="sm:w-[2vw] lg:w-[1.5vw]"
               />
-              <span>{logedUsername?.slice(" ")[0] || userName}</span>
+              <span>
+                {logedUsername?.split(" ")[0] ||
+                  userName?.split(" ")[0] ||
+                  "Guest"}
+              </span>
             </div>
           </Link>
         </div>
