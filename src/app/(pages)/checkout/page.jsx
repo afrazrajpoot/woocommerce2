@@ -26,12 +26,10 @@ const page = () => {
   const fetchOrder = async (data) => {
     try {
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
-      // console.log(response, "respoooooone");
     } catch (err) {
       toast.error("Network fail please try again later", {
         position: "top-right",
       });
-      // console.log(err.message);
     }
   };
   useEffect(() => {

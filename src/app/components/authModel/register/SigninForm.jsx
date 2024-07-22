@@ -38,20 +38,16 @@ const SigninForm = () => {
   const onSubmit = async (formData) => {
     try {
       const res = await login(formData);
-      // console.log(res.data.user.fullName, "ress");
       setLogedUsername(res.data.user.fullName);
     } catch (error) {
       toast.error("Failed to login", {
         position: "top-right",
       });
-      // console.log(error);
     }
-    // console.log(res, "ress");
   };
   useEffect(() => {
     if (isError) {
       setLoginModel(true);
-      // alert("Please enter correct details");
       toast.error("Please enter correct details", {
         position: "top-right",
         autoClose: 5000,

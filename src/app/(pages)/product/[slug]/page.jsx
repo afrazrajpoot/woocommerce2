@@ -14,13 +14,8 @@ import Footer from "@/app/components/Common/Footer/Footer";
 import { useGlobalContext } from "@/context/globalState";
 import { extractContent } from "@/app/utils/extractContent";
 import Loading from "@/app/components/Common/Loading";
-
 import { toast } from "sonner";
-import {
-  useGetDataByIdMutation,
-  useGetDataByIdQuery,
-  useUpdateSubscriptionMutation,
-} from "@/store/storeApi";
+import { useGetDataByIdMutation,  useUpdateSubscriptionMutation,} from "@/store/storeApi";
 import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ params: { slug } }) => {
@@ -38,8 +33,7 @@ const ProductDetails = ({ params: { slug } }) => {
     customerDetails,
     CreateWooCommerceData,
     customerID,
-    state,
-    setState,
+    login,
     setCartDetail,
   } = useGlobalContext();
 
@@ -83,18 +77,10 @@ const ProductDetails = ({ params: { slug } }) => {
     localStorage.setItem("productsAddedToCart", JSON.stringify(updatedCart));
   };
 
-  const removeFromCartHandler = (index) => {
-    const updatedCart = productsAddedToCart.filter((_, i) => i !== index);
-    setCartCount(updatedCart.length);
-    setProductsAddedToCart(updatedCart);
-    localStorage.setItem("productsAddedToCart", JSON.stringify(updatedCart));
-  };
-
   const fetchProducts = async () => {
     try {
       const data = await fetchWooCommerceData(`wc/v3/products?slug=${slug}`);
       const product = data?.data[0];
-      // console.log(product?.related_ids, "products");
       setProductDetails(product);
       fetchRelatedProducts(product?.related_ids);
     } catch (error) {
@@ -109,7 +95,6 @@ const ProductDetails = ({ params: { slug } }) => {
       const relatedProductsData = await Promise.all(
         relatedIds.map((id) => fetchWooCommerceData(`wc/v3/products/${id}`))
       );
-      // console.log(relatedProductsData, "relatedProductsData");
       setRelatedProducts(relatedProductsData);
     } catch (error) {
       toast.error("Network error please try again later", {
@@ -154,41 +139,20 @@ const ProductDetails = ({ params: { slug } }) => {
     ],
   };
 
-  // console.log(productDetails, "my single products");
   const fetchOrder = async (data) => {
     try {
       setLoading(true);
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
       setLoading(false);
-      // console.log(response, "subscriptionorder");
     } catch (err) {
       toast.error("Please get subscription", {
         position: "top-right",
       });
       setLoading(false);
-      // console.log(err.message);
     }
   };
   const navigate = useRouter();
   function createSubscriptionOrder() {
-    //   name: item.name,
-    //   quantity: item.quantity,
-    //   price: item.unit_amount.value,
-    //   subtotal: item.unit_amount.value,
-    //   total: item.unit_amount.value,
-    //   taxes: [],
-    //   meta_data: [],
-    //   sku: checkoutDetail?.[0]?.sku || null,
-    //   image: checkoutDetail?.[0]?.images?.[0]?.src
-    //     ? {
-    //         id: 0,
-    //         src:
-    //           checkoutDetail?.[0]?.images?.[0]?.src +
-    //           " " +
-    //           checkoutDetail[0].downloads[0].id,
-    //       }
-    //     : null,
-    // }));
     const lineItems = [
       {
         product_id: productDetails?.id,
@@ -206,8 +170,7 @@ const ProductDetails = ({ params: { slug } }) => {
       },
     ];
 
-    // console.log(lineItems, "lineItems2");
-    // console.log(customerDetails, "customerDetails");
+    
     fetchOrder({
       payment_method: "paypal",
       payment_method_title: "PayPal",
@@ -245,9 +208,20 @@ const ProductDetails = ({ params: { slug } }) => {
       ],
     });
   }
+  
+  async function handleLoginCheckout() {
+    if(!login){
+      navigate.push("/login");
+      return;
+    }
+    else if (!customerID || customerID === "null") {
+      navigate.push("/accountdetails");
+      return;
+    }
+  }
+
   async function hanldeSubscription() {
     const res = await getSubscriptionData({ id: id });
-    // console.log(res.data.subscription, "myData2");
     const limit = res.data?.subscription?.downloadLimit;
     const lastDate = res.data?.subscription?.endDate;
 
@@ -273,10 +247,8 @@ const ProductDetails = ({ params: { slug } }) => {
       });
       navigate.push("/downloads");
     }
-    // console.log(res.data.subscription, "myData2");
   }
 
-  // console.log(typeof +subscriptionLimit, "myLimit");
   return (
     <>
       <main className="w-full relative overflow-x-hidden">
@@ -334,7 +306,6 @@ const ProductDetails = ({ params: { slug } }) => {
                   onClick={() => {
                     addToCartHandler(productDetails);
                     setCartDetail(false);
-                    // setOpenCartDrawer(true);
                     showCart(true);
                   }}
                   variant="outlined"
@@ -342,13 +313,24 @@ const ProductDetails = ({ params: { slug } }) => {
                 >
                   Add to cart
                 </Button>
-                <Button
-                  onClick={hanldeSubscription}
+               {!customerID ?  <Button
+                  onClick={()=> { 
+                    handleLoginCheckout();
+                    addToCartHandler(productDetails);
+                    setCartDetail(false);
+                    navigate.push("/checkout");
+                  }}
                   variant="contained"
                   className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
                 >
                   {loading ? "Loading..." : "BUY NOW"}
-                </Button>
+                </Button> :  <Button
+                  onClick={hanldeSubscription}
+                  variant="contained"
+                  className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
+                >
+                  {loading ? "Loading..." : "Get This Pack"}
+                </Button>}
                 <section className="flex border-t-[1px] border-[#E5E5E5] mt-[3vw] lg:mt-[1vw] items-center justify-between p-[1vw]">
                   <p className="text-[#171717] font-medium text-[4vw] sm:text-[2vw] lg:text-[1vw]">
                     Compatibility
