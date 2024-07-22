@@ -179,16 +179,16 @@ const SigninForm = () => {
           Opt out of emails about latest product updates
         </label>
       </div>
-
       <Button
         type="submit"
         size="large"
         className="w-full mt-4 text-[2vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
+        disabled={isLoading}
       >
-        Submit
+        {isLoading ? "Submitting..." : "signin"}
       </Button>
     </form>
   );
 };
 
-export default SigninForm
+export default SigninForm;

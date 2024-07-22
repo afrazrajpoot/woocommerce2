@@ -1,9 +1,40 @@
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
 import { NextResponse } from "next/server";
-import sendEmail from "@/utils/sendEmail";
+// import sendEmail from "@/utils/sendEmail";
 import { connection } from "@/dbConfig/dbConfig";
+
+import nodemailer from "nodemailer";
 connection();
+// utils/sendEmail.js
+
+const sendEmail = async (to, subject, text) => {
+  try {
+    // Create a transporter object using the default SMTP transport
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        user: "rebecca32@ethereal.email",
+        pass: "bQJZNfAv89ssdHtXVm",
+      },
+    });
+
+    // Send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: `" Sonduck film`, // sender address
+      to: to, // list of receivers
+      subject: subject, // Subject line
+      text: text, // plain text body
+    });
+
+    // console.log("Message sent: %s", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Error sending email: %s", error);
+    throw new Error("Error sending email");
+  }
+};
 
 export async function POST(req) {
   try {

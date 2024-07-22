@@ -5,16 +5,12 @@ import { useForm, Controller } from "react-hook-form";
 import { resetForm } from "@/data/data"; // Adjust import path as needed
 import { useGlobalContext } from "@/context/globalState";
 import { useResetPasswordMutation } from "@/store/storeApi"; // Adjust import path as needed
+import { toast } from "sonner";
 
 const ResetForm = () => {
-  const { otpReset } = useGlobalContext();
-  const [dataForResetPassword, setDataForResetPassword] = useState({
-    id: "",
-    otp: "",
-    oldPassword: "",
-    newPassword: "",
-  });
-  const [id, setId] = useState();
+  const { otpReset, setLoginModel, setResetModel } = useGlobalContext();
+
+  const [id, setId] = useState("");
   const [resetPasswordApi, { isLoading, isError, isSuccess }] =
     useResetPasswordMutation();
   const {
@@ -24,8 +20,8 @@ const ResetForm = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    setDataForResetPassword({
-      id: id,
+    resetPasswordApi({
+      id,
       otp: otpReset,
       oldPassword: data.oldPassword,
       newPassword: data.newPassword,
@@ -33,31 +29,25 @@ const ResetForm = () => {
   };
 
   useEffect(() => {
-    if (
-      dataForResetPassword.id &&
-      dataForResetPassword.otp &&
-      dataForResetPassword.oldPassword &&
-      dataForResetPassword.newPassword
-    ) {
-      resetPasswordApi(dataForResetPassword); // Ensure to await for the mutation
+    const userData = JSON.parse(localStorage.getItem("userId"));
+    if (userData) {
+      setId(userData);
     }
-  }, [dataForResetPassword]);
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
-      alert("Password reset successfully!"); // Alert or handle success as needed
+      setResetModel(false);
+      setLoginModel(true);
+
+      toast.success("Password reset successfully!", { position: "top-right" });
     }
     if (isError) {
-      alert("Password reset failed!");
+      toast.error("Please enter correct OTP and password!", {
+        position: "top-right",
+      });
     }
   }, [isSuccess, isError]);
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData && userData.user && userData.user._id) {
-      setId(userData.user._id);
-    }
-  }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full">
@@ -82,6 +72,7 @@ const ResetForm = () => {
                   errors[field.name] ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder={field.placeholder || ""}
+                value={field.value}
                 required
               />
             )}

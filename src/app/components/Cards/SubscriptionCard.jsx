@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-const SubscriptionCard = ({ title, price, features, paymentMethod, paypalContainerId }) => {
+const SubscriptionCard = ({
+  title,
+  price,
+  features,
+  paymentMethod,
+  paypalContainerId,
+  available,
+}) => {
   const [monthlyPlan, setMonthlyPlan] = useState(true);
 
   return (

@@ -8,8 +8,8 @@ const SubscriptionPlans = () => {
   const navigate = useRouter();
   const { selectedPlan, setSelectedPlan } = useGlobalContext();
 
-  const handlePlanSelect = (index, price, features) => {
-    const newSelectedPlan = { index, price, features };
+  const handlePlanSelect = (index, price, features,available) => {
+    const newSelectedPlan = { index, price, features,available };
     setSelectedPlan(newSelectedPlan);
     navigate.push("/payment");
     // console.log("Selected Plan Details:", selectedPlan);
@@ -30,7 +30,12 @@ const SubscriptionPlans = () => {
             <SubscriptionCard
               {...plan}
               paymentMethod={() =>
-                handlePlanSelect(index, plan.price, plan.features)
+                handlePlanSelect(
+                  index,
+                  plan.price,
+                  plan.features,
+                  plan.available
+                )
               }
             />
             {/* {selectedPlan && selectedPlan.index === index && (

@@ -22,6 +22,7 @@ export const UserProvider = ({ children }) => {
     setLogin(false);
     setLoginModel(false);
   }
+  const [limit, setLimit] = useState(5);
   const [logedUsername, setLogedUsername] = useState(null);
   const [login, setLogin] = useState(null);
   const [openLoginModel, setLoginModel] = useState(false);
@@ -35,16 +36,32 @@ export const UserProvider = ({ children }) => {
   const [openOtpModel, setOtpModel] = useState(false);
   const [openResetModel, setResetModel] = useState(false);
   const [otpReset, setOtpReset] = useState();
-  const [dataForResetPassword, setDataForResetPassword] = useState({oldPassword: "", email: "",  otp: "",  newPassword: ""});
-  const [querySuggestion, setQuerySuggestion] = useState();
+  const [dataForResetPassword, setDataForResetPassword] = useState({
+    oldPassword: "",
+    email: "",
+    otp: "",
+    newPassword: "",
+  });
+const [state,setState] = useState(false)
+  const [cartDetail, setCartDetail] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({
-    username: "", first_name: "", last_name: "", email: "",
-    date_created: "", postcode: "", phone: "", address1: "",
-    city: "", country: "",
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    date_created: "",
+    postcode: "",
+    phone: "",
+    address1: "",
+    city: "",
+    country: "",
   });
   const [customerID, setCustomerID] = useState(null);
   const [loggedUser, setLoggedUser] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState({ price: null, features: [],});
+  const [selectedPlan, setSelectedPlan] = useState({
+    price: null,
+    features: [],
+  });
   const [cart, showCart] = useState(false);
   const toggleSidebar = () => {
     setMobileSidebarOpen((prev) => !prev);
@@ -59,8 +76,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      toast.error("Error fetching WooCommerce data:", error.message);
-      throw error;
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -72,8 +90,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      toast.error("Error creating WooCommerce data:", error.message);
-      throw error;
+      toast.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
 
@@ -86,8 +105,9 @@ export const UserProvider = ({ children }) => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error updating WooCommerce data:", error.message);
-      throw error;
+      console.error("Network error please try again later", {
+        position: "top-right",
+      });
     }
   };
   useEffect(() => {
@@ -146,8 +166,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [cartCount]);
 
- 
-
   return (
     <UserContext.Provider
       value={{
@@ -193,12 +211,17 @@ export const UserProvider = ({ children }) => {
         setDataForResetPassword,
         cart,
         showCart,
-        querySuggestion,
-        setQuerySuggestion,
+
         logedUsername,
         setLogedUsername,
         selectedPlan,
         setSelectedPlan,
+        limit,
+        setLimit,
+        state,
+        setState,
+        cartDetail,
+        setCartDetail,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { forgetForm } from "@/data/data";
 import { useForgotPasswordMutation } from "@/store/storeApi";
 import { useGlobalContext } from "@/context/globalState";
+import { toast } from "sonner";
 
 const ForgetForm = () => {
   const { dataForResetPassword, setDataForResetPassword } = useGlobalContext();
@@ -31,7 +32,9 @@ const ForgetForm = () => {
       setForgetModel(false); // Close forget model
     }
     if (isError) {
-      alert("something wrong");
+      toast.error("something wrong please try again", {
+        position: "top-right",
+      });
     }
   }, [isSuccess, setOtpModel, setForgetModel]);
 

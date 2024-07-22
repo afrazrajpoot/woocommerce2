@@ -7,7 +7,7 @@ connection();
 export async function POST(req) {
   try {
     const { oldPassword, id, otp, newPassword } = await req.json();
-    // console.log(oldPassword, id, otp, newPassword, "j");
+    console.log(oldPassword, id, otp, newPassword, "j");
     const user = await User.findById({ _id: id });
     if (!user) {
       return NextResponse.json(

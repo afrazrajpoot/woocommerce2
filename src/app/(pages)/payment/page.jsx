@@ -14,8 +14,12 @@ import CheckoutButton from "../components/CheckoutButton";
 import { loadScript } from "@paypal/paypal-js";
 import { toast } from "sonner";
 import SuccessPaymentModel from "../components/authModel/resetModal/SuccessPaymentModel";
+import axios from "axios";
+import { useSubmitSubscriptionMutation } from "@/store/storeApi";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const navigate = useRouter();
   const paymentData = [
     { img: "/img/visaCard.png", value: "visa" },
     { img: "/img/masterCard.png", value: "mastercard" },
@@ -26,35 +30,31 @@ const Page = () => {
     { img: "/img/appleCard.png", value: "appleCard" },
     { img: "/img/paypalCard.png", value: "paypalCard" },
   ];
-  const [checkoutDetail, setCheckoutDetail] = useState(null);
+
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const {
-    fetchWooCommerceData,
-    selectedPlan,
-    productsAddedToCart,
-    customerDetails,
-    CreateWooCommerceData,
-  } = useGlobalContext();
+
+  const [setSubscription, { isError, isLoading, data, isSuccess }] =
+    useSubmitSubscriptionMutation();
+  const { selectedPlan, customerID, customerDetails } = useGlobalContext();
   const [successPayment, setSuccessPayment] = useState(false);
-  // useEffect(() => {
-  //   const checkout = JSON.parse(localStorage.getItem("checkout"));
-  //   setCheckoutDetail(checkout);
-  // }, []);
-  // console.log(selectedPlan, "plan subscription");
-  // async function paymentMethod() {
-  //   try {
-  //     const response = await fetchwWooCommerceData(
-  //       "wc/v3/payment_gateways/bacs"
-  //     );
-  //     // console.log(response);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
 
   const handleRadioChange = (event) => {
     setSelectedPayment(event.target.value);
   };
+  const submitSubscription = async () => {
+    try {
+      const res = await setSubscription({
+        username: customerDetails?.username,
+        email: customerDetails?.email,
+        downloadLimit: 0,
+        price: selectedPlan.price,
+        available: selectedPlan.available,
+      });
+    } catch (err) {
+      toast.error("Network failed please try again");
+    }
+  };
+
   const paymentMethod = async () => {
     loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
       (paypal) => {
@@ -112,17 +112,9 @@ const Page = () => {
                     meta_data: [],
                   })
                 );
-                console.log(lineItems, "succecc payment");
-                // toast.success("Payment successful", {
-                //   position: "top-right",
-                //   autoClose: 3000,
-                //   hideProgressBar: false,
-                //   closeOnClick: true,
-                //   pauseOnHover: true,
-                //   draggable: true,
-                //   progress: undefined,
-                //   theme: "light",
-                // });
+
+                submitSubscription();
+
                 setSuccessPayment(true);
               });
             },
@@ -139,7 +131,7 @@ const Page = () => {
               });
             },
             onError: (err) => {
-              toast.error("Payment error", {
+              toast.error("Payment insufficiant amount 0 ", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -149,20 +141,38 @@ const Page = () => {
                 progress: undefined,
                 theme: "light",
               });
-              console.error("Payment error:", err);
+              // console.error("Payment error:", err);
             },
           })
           .render("#paypal-button-container");
       }
     );
   };
+  const handlePayment = () => {
+    if (customerID) {
+      paymentMethod();
 
-  const product = {
-    title: "Sample Product",
-    description: "This is a sample product description.",
-    price: "10.00",
-    image: "/path/to/image.jpg",
+      return;
+    }
+    toast.error("Please register your account", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    navigate.push("/accountdetails");
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      // console.log(data.subscription._id, "myData");
+      localStorage.setItem("subId", data.subscription._id);
+    }
+  }, [isSuccess]);
 
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">
@@ -281,7 +291,7 @@ const Page = () => {
                 type="submit"
                 size="large"
                 className="w-full lg:mt-[1.5vw] mt-[3vw] sm:text-[1.5vw] text-[2.5vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
-                onClick={paymentMethod}
+                onClick={handlePayment}
               >
                 Continue to Payment
               </Button>

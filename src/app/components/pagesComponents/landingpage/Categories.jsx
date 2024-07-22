@@ -37,7 +37,8 @@ const Categories = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          toast.error("Category not found");
+          toast.error("Category not found",{
+            position: "top-right",});
           return;
         }
       }
@@ -46,7 +47,8 @@ const Categories = () => {
       const data = response.data;
       setProducts(data);
     } catch (error) {
-      toast.error("Network error please try again");
+      toast.error("Network error please try again",{
+        position: "top-right",});
     }
   };
   const handleClick = (label) => {

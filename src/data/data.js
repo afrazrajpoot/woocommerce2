@@ -94,8 +94,8 @@ export const forgetForm = [
 ];
 export const resetForm = [
   {
-    label: "Create Password",
-    name: "password",
+    label: "Old Password",
+    name: "oldPassword",
     type: "password",
     placeholder: "Must be at least 8 characters",
     pc: "email",
@@ -110,7 +110,7 @@ export const resetForm = [
   },
   {
     label: "New password",
-    name: "password",
+    name: "newPassword",
     type: "password",
     placeholder: "Must be at least 8 characters",
     pc: "email",
@@ -829,6 +829,7 @@ export const subscriptionPlans = [
   {
     title: "Regular",
     price: "25",
+    available: "1d",
     features: [
       "5 downloads per day",
       "Access to all products",
@@ -839,6 +840,7 @@ export const subscriptionPlans = [
   {
     title: "Basic",
     price: "120",
+    available: "month",
     features: [
       "10 downloads per day",
       "Access to all products",
@@ -849,6 +851,7 @@ export const subscriptionPlans = [
   {
     title: "Pro",
     price: "320",
+    available: "year",
     features: [
       "Unlimited downloads per day",
       "Access to all products",
