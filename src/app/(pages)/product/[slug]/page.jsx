@@ -211,10 +211,16 @@ const ProductDetails = ({ params: { slug } }) => {
   
   async function handleLoginCheckout() {
     if(!login){
-      navigate.push("/login");
+      toast.error("Please login first", {
+        position: "top-right",
+      });
+      navigate.push("/");
       return;
     }
     else if (!customerID || customerID === "null") {
+      toast.error("Please register your account", {
+        position: "top-right",
+      });
       navigate.push("/accountdetails");
       return;
     }
@@ -304,6 +310,10 @@ const ProductDetails = ({ params: { slug } }) => {
                 </nav>
                 <Button
                   onClick={() => {
+                    if(!customerID || !login) {
+                      handleLoginCheckout();
+                      return;
+                    }
                     addToCartHandler(productDetails);
                     setCartDetail(false);
                     showCart(true);
@@ -315,7 +325,10 @@ const ProductDetails = ({ params: { slug } }) => {
                 </Button>
                {!customerID ?  <Button
                   onClick={()=> { 
-                    handleLoginCheckout();
+                    if(!login || !customerID) {
+                      handleLoginCheckout();
+                      return;
+                    }
                     addToCartHandler(productDetails);
                     setCartDetail(false);
                     navigate.push("/checkout");

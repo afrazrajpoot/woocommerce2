@@ -3,20 +3,17 @@
 import { useGlobalContext } from "@/context/globalState";
 import { billingAddressFrom } from "@/data/data";
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const BillingForm = () => {
   const {
     CreateWooCommerceData,
-    fetchWooCommerceData,
     updateWooCommerceData,
     customerDetails,
-    setCustomerDetails,
+    setCustomerDetails,customerID, loggedUser
   } = useGlobalContext();
-  const [loggedUser, setLoggedUser] = useState(null);
-  const [customerID, setCustomerID] = useState(null);
 
   const {
     handleSubmit,
@@ -38,8 +35,6 @@ const BillingForm = () => {
     },
   });
 
-  // console.log(customerDetails, "customerDetails");
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCustomerDetails({ ...customerDetails, [name]: value });
@@ -47,16 +42,6 @@ const BillingForm = () => {
   };
 
   const onSubmit = async (data) => {
-    // if data is empty then use a for loop and set the customer details to the values of the input fields
-    for (const details of customerDetails) {
-      // console.log(details, "details");
-      setCustomerDetails({
-        ...customerDetails,
-        [details]: loggedUser?.[details] || "",
-      });
-    }
-
-    // console.log(data, "data");
     try {
       const requestData = {
         username: customerDetails?.username || data?.username,
@@ -74,63 +59,31 @@ const BillingForm = () => {
 
       if (customerID) {
         await updateWooCommerceData(`wc/v3/customers`, customerID, requestData);
+        toast.success("account updated successfully", {
+          position: "top-right",
+      })
       } else {
         const user = await CreateWooCommerceData("wc/v3/customers", {
           ...requestData,
-          password: "12345678", // Set a default password for new customers
+          password: "12345678",
         });
         localStorage.setItem("customerID", JSON.stringify(user?.id));
         setCustomerID(user?.id);
+        toast.success("account updated successfully", {
+          position: "top-right",
+      })  
       }
       reset();
     } catch (error) {
       toast.error(error.message);
-      // console.log(error.message, "error creating/updating account");
     }
   };
 
-  useEffect(() => {
-    const customerID = localStorage.getItem("customerID");
-    if (customerID) {
-      setCustomerID(customerID);
-      fetchWooCommerceData(`wc/v3/customers/${customerID}`).then((data) => {
-        setCustomerDetails({
-          username: data?.username || "",
-          first_name: data?.first_name || "",
-          last_name: data?.last_name || "",
-          email: data?.email || "",
-          postcode: data?.billing?.postcode || "",
-          phone: data?.billing?.phone || "",
-          address1: data?.billing?.address_1 || "",
-          city: data?.billing?.city || "",
-          country: data?.billing?.country || "",
-        });
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      try {
-        const parsedUser = JSON.parse(user);
-        setLoggedUser(parsedUser?.user);
-        setCustomerDetails({
-          ...customerDetails,
-          username: parsedUser?.user?.fullName,
-          email: parsedUser?.user?.email,
-        });
-      } catch (error) {
-        toast.error('Error parsing user data');
-        // console.error(error);
-      }
-    }
-  }, []);
   return (
     <main className="">
-      <form action="">
+      <form onSubmit={handleSubmit(onSubmit)}>
         {billingAddressFrom?.map((item, index) => (
-          <div className={""}>
+          <div className={""} key={index}>
             <div key={index} className="lg:mb-6 mb-[3vw]">
               <label
                 htmlFor={item.name}
@@ -142,7 +95,7 @@ const BillingForm = () => {
                 <Controller
                   name={item?.name}
                   control={control}
-                  rules={item?.rules}
+                  // rules={item?.rules}
                   render={({ field }) => (
                     <input
                       {...field}
@@ -174,11 +127,10 @@ const BillingForm = () => {
             <Controller
               name={"city"}
               control={control}
-              // rules={item?.rules}
               render={({ field }) => (
                 <input
                   {...field}
-                  type="text"
+                  type="text" onChange={(e) => handleInputChange(e)}
                   value={customerDetails?.city}
                   className="bg-[#FAFAFA] p-[3vw] lg:p-[0.7vw] sm:text-[2vw] sm:p-[2vw] w-full focus:outline-none border-[1px] rounded-sm border-[#F5F5F5] lg:text-[0.9vw] text-[3.5vw] lg:w-[22vw] sm:w-[41vw]"
                 />
@@ -195,11 +147,10 @@ const BillingForm = () => {
             <Controller
               name={"postcode"}
               control={control}
-              // rules={item?.rules}
               render={({ field }) => (
                 <input
                   {...field}
-                  type="text"
+                  type="text" onChange={(e) => handleInputChange(e)}
                   value={customerDetails?.postcode}
                   className="bg-[#FAFAFA] p-[3vw] lg:p-[0.7vw] sm:text-[2vw] sm:p-[2vw] w-full focus:outline-none border-[1px] rounded-sm border-[#F5F5F5] lg:text-[0.9vw] text-[3.5vw] lg:w-[22vw] sm:w-[41vw]"
                 />
@@ -207,8 +158,7 @@ const BillingForm = () => {
             />
           </div>
         </div>
-      </form>
-      <Button
+      <Button type="submit"
         size="small"
         variant="outlined"
         className=" lg:text-[0.7vw] text-[4vw] sm:text-[1.5vw] text-[#FF387A] border-[1.5px] font-bold border-[#FF387A] hover:border-[#FF387A] py-[0.6vw] px-[1vw] "
@@ -216,6 +166,7 @@ const BillingForm = () => {
       >
         Edit
       </Button>
+      </form>
     </main>
   );
 };

@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 const UserContext = createContext();
 
 export const useGlobalContext = () => useContext(UserContext);
@@ -22,6 +23,7 @@ export const UserProvider = ({ children }) => {
     setLogin(false);
     setLoginModel(false);
   }
+  const navigate = useRouter();
   const [limit, setLimit] = useState(5);
   const [logedUsername, setLogedUsername] = useState(null);
   const [login, setLogin] = useState(null);
@@ -129,7 +131,7 @@ const [state,setState] = useState(false)
         });
       });
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -146,7 +148,7 @@ const [state,setState] = useState(false)
         console.error(error);
       }
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("user"));
