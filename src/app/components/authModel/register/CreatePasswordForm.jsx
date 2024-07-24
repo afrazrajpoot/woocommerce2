@@ -113,7 +113,7 @@ const CreatePasswordForm = () => {
             size="large"
             className="w-full mt-4 text-[3vw] lg:text-[0.8vw] sm:text-[1.5vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
           >
-            {isLoading ? <Loading h={5} w={5} /> : "Save changes"}
+            {isLoading ? <Loading  /> : "Save changes"}
           </Button>
         </form>
       </div>

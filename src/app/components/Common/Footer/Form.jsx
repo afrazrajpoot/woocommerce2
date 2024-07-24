@@ -157,7 +157,7 @@ const Form = () => {
           className="w-full mt-4 text-[2vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
           disabled={isLoading}
         >
-          {isLoading ? <Loading h={5} w={5} /> : "Submit"}
+          {isLoading ? <Loading /> : "Submit"}
         </Button>
       </form>
     </>

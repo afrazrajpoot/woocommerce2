@@ -298,7 +298,7 @@ const Page = () => {
                 className="w-full lg:mt-[1.5vw] mt-[3vw] sm:text-[1.5vw] text-[2.5vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
                 onClick={handlePayment}
               >
-                {loading ? <Loading h={5} w={5} /> : "Continue to Payment"}
+                {loading ? <Loading /> : "Continue to Payment"}
               </Button>
               <div
                 id="paypal-button-container"

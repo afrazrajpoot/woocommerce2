@@ -76,7 +76,7 @@ const Page = () => {
         </h1>
         <div className="p-[2vw] w-full bg-white border-[1px] border-[#F5F5F5] mt-[1vw] translate-y-[20vw] sm:translate-y-[8vw] lg:translate-y-[5vw] rounded-lg">
           {loading ? (
-            <Loading h={10} w={10} />
+            <Loading />
           ) : (
             <div className="flex flex-col lg:grid lg:grid-cols-3 sm:flex-row lg:gap-[1vw] gap-[5vw] items-center">
               {fetchedPersonalOrders?.data?.map((elem, ind) => (

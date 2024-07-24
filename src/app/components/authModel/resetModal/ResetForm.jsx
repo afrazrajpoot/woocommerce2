@@ -90,7 +90,7 @@ const ResetForm = () => {
         className="w-full mt-4 text-sm bg-[#FF387A] hover:bg-[#FF387A] text-white"
         disabled={isLoading} // Disable button while loading
       >
-        {isLoading ? <Loading h={5} w={5} /> : "Next"}
+        {isLoading ? <Loading  /> : "Next"}
       </Button>
     </form>
   );

@@ -9,8 +9,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Loading from "../../Common/Loading";
+// import Loading from "../../Common/Loading";
 import { useUploadImageMutation } from "@/store/storeApi";
+import Loading from "../../Common/Loading";
+import { StarRateOutlined } from "@mui/icons-material";
 
 const FormInput = ({ label, type, name, value, onChange }) => {
   return (
@@ -38,6 +40,8 @@ const AccountForm = () => {
   const [user, setUser] = useState({});
   const [file, setFile] = useState(null);
   const [url, imgUrl] = useState("");
+  const [profileImage, setProfileImage] = useState(false);
+
   // console.log(session.data.user.name, "session data");
   const navigate = useRouter();
   const {
@@ -50,8 +54,9 @@ const AccountForm = () => {
     setCustomerID,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  const [uploadTheImage, { isLoading, error, isError, isSuccess }] =
+  const [uploadTheImage, { isLoading, error, isError, isSuccess, data }] =
     useUploadImageMutation();
+  const [googleImage, setGoogleImage] = useState("");
   const {
     handleSubmit,
     control,
@@ -79,9 +84,6 @@ const AccountForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const sessionUser = session?.data?.user || {};
-      const localUser = user?.data?.user || {};
-
       if (user) {
         //   if (
         //     data?.username !== localUser.fullName ||
@@ -190,6 +192,9 @@ const AccountForm = () => {
 
   async function uploadImageOnServer() {
     try {
+      const userFromLocal = JSON.parse(localStorage.getItem("user"));
+
+      // console.log(userFromLocal.user._id, "userid");
       if (!file) {
         toast.error("Please select the image to upload", {
           position: "top-right",
@@ -205,8 +210,11 @@ const AccountForm = () => {
       }
       const formData = new FormData();
       formData.append("file", file);
-
+      formData.append("id", userFromLocal.user._id);
       uploadTheImage(formData);
+
+      // localStorage.setItem("profile", user?.user?.img);
+
       // console.log(res, "res");
     } catch (error) {
       toast.error("Failed to upload image", {
@@ -224,9 +232,13 @@ const AccountForm = () => {
   useEffect(() => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     setUser(userFromLocal);
+    setGoogleImage(session?.data?.user?.image);
   }, []);
   useEffect(() => {
     if (isSuccess) {
+      // console.log(data, "profileData");
+      localStorage.setItem("user", JSON.stringify(data));
+
       toast.success("Image upload successfully", {
         position: "top-right",
         autoClose: 5000,
@@ -239,7 +251,19 @@ const AccountForm = () => {
       });
     }
   }, [isSuccess]);
-  // console.log(file, "useree");
+
+  useEffect(() => {
+    window.addEventListener("load", () => {
+      setProfileImage(false);
+    });
+
+    return () => {
+      window.removeEventListener("load", () => {
+        setProfileImage(false);
+      });
+    };
+  }, []);
+  // console.log(session?.data?.user?.image, "session");
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">
@@ -252,19 +276,33 @@ const AccountForm = () => {
               setFile(e.target.files[0]);
               const url = URL.createObjectURL(e.target.files[0]);
               imgUrl(url);
+              setProfileImage(true);
             }}
             id=""
             ref={ref}
           />
           <figure className="hover:cursor-pointer" onClick={uploadImage}>
-            <Avatar className="w-[5vw] h-[5vw]">
-              {url ? (
-                <img src={url} alt="avatar" className="" />
-              ) : (
-                loggedUser?.fullName[0]
-              )}
-            </Avatar>
-            {/* <img src="/img/accountAvatar.png" alt="avatar" className="" /> */}
+            {user ? (
+              <Avatar className="w-[5vw] h-[5vw]">
+                {profileImage ? (
+                  url ? (
+                    <img src={url} alt="avatar" className="w-full h-full" />
+                  ) : (
+                    loggedUser?.fullName[0]
+                  )
+                ) : (
+                  <img
+                    src={user?.user?.img}
+                    alt="avatar"
+                    className="w-full h-full"
+                  />
+                )}
+              </Avatar>
+            ) : (
+              <Avatar>
+                <img src={`${session?.data?.user?.image}`} alt="afrazff" />
+              </Avatar>
+            )}
           </figure>
           <div>
             <p className="lg:text-[1vw] text-[4vw] sm:text-[2.5vw] text-[#64748B]">
@@ -275,7 +313,7 @@ const AccountForm = () => {
                 onClick={uploadImageOnServer}
                 className="bg-[#FF387A] text-white sm:text-[1.5vw] lg:text-[0.7vw] text-[2vw] font-bold hover:bg-[#FF387A] lg:py-[0.5vw] py-[1vw]   rounded-lg px-[2vw] "
               >
-                {isLoading ? <Loading h={5} w={5} /> : "upload photo"}
+                {isLoading ? <Loading /> : "upload photo"}
               </Button>
               <Button
                 variant="outlined"
@@ -459,13 +497,7 @@ const AccountForm = () => {
             variant="outlined"
             className="text-[2.5vw] lg:text-[0.7vw] sm:text-[1.5vw] text-[#FF387A] border-[1.5px] font-bold border-[#FF387A] hover:border-[#FF387A] lg:py-[0.6vw] py-[2vw] px-[3vw] lg:px-[1vw]"
           >
-            {loading ? (
-              <Loading h={5} w={5} />
-            ) : customerID ? (
-              "Update"
-            ) : (
-              "Create"
-            )}
+            {loading ? <Loading /> : customerID ? "Update" : "Create"}
           </Button>
         </form>
       </main>

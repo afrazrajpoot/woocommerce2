@@ -1,18 +1,26 @@
 import { NextResponse } from "next/server";
-import cloudinary from "cloudinary";
-import { Readable } from "stream";
+import { writeFile } from "fs/promises";
+import path from "path";
+import crypto from "crypto";
+import User from "@/models/userModel";
+import { connection } from "@/dbConfig/dbConfig";
 
-// Configure Cloudinary with your credentials
-cloudinary.v2.config({
-  cloud_name: "dskn7duay",
-  api_key: "586492171578996",
-  api_secret: "kNClI4X88o3YPzMn2lv-eKOeLjk",
-});
+// Function to generate a unique file name
+
+function generateUniqueFileName(originalName) {
+  const timestamp = Date.now();
+  const randomString = crypto.randomBytes(8).toString("hex");
+  const extension = path.extname(originalName);
+  const baseName = path.basename(originalName, extension);
+  return `${baseName}_${timestamp}_${randomString}${extension}`;
+}
 
 export async function POST(req) {
+  connection();
   try {
     const data = await req.formData();
     const file = data.get("file");
+    const id = data.get("id");
 
     if (!file) {
       return NextResponse.json({ error: "File not found" }, { status: 400 });
@@ -21,34 +29,32 @@ export async function POST(req) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Create a readable stream from the buffer
-    const stream = Readable.from(buffer);
+    // Generate a unique file name
+    const uniqueFileName = generateUniqueFileName(file.name);
 
-    // Promise-based wrapper around upload_stream
-    const uploadPromise = new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.v2.uploader.upload_stream(
-        { resource_type: "auto" },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      );
+    // Define the path to save the file in the public folder
+    const publicFolderPath = path.join(process.cwd(), "public/uploads");
+    const filePath = path.join(publicFolderPath, uniqueFileName);
 
-      stream.pipe(uploadStream);
-    });
+    // Save the file to the public folder
+    await writeFile(filePath, buffer);
 
-    // Wait for the upload to complete
-    const result = await uploadPromise;
+    // Generate the URL to access the file
+    const fileUrl = `/uploads/${uniqueFileName}`;
 
-    return NextResponse.json(
-      { success: true, url: result.secure_url },
-      { status: 200 }
-    );
+    // Fetch and update the user
+    const user = await User.findById({ _id: id });
+    // console.log(user, "user");
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    user.img = fileUrl;
+    await user.save();
+
+    return NextResponse.json({ success: true, user }, { status: 200 });
   } catch (err) {
-    console.error(err);
+    console.error("Error during file upload or user update:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
