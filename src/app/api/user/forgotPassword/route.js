@@ -31,7 +31,7 @@ const sendEmail = async (to, subject, text) => {
     // console.log("Message sent: %s", info.messageId);
     return info;
   } catch (error) {
-    console.error("Error sending email: %s", error);
+    // console.error("Error sending email: %s", error);
     throw new Error("Error sending email");
   }
 };
@@ -55,7 +55,7 @@ export async function POST(req) {
     // Save OTP to user (you need to add an otp field to your user model)
     user.otp = otp;
     await user.save();
-    console.log(user);
+    // console.log(user);
 
     // Send OTP to user's email
     await sendEmail(user.email, "Your OTP Code", `Your OTP code is ${otp}`);

@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
+import Loading from "../../Common/Loading";
 
 const CreatePasswordForm = () => {
   const [id, setId] = useState("");
@@ -42,7 +43,7 @@ const CreatePasswordForm = () => {
       });
     }
     if (isError) {
-      toast.error("Something went wrong", {
+      toast.error("Your credential is wrong please enter correct password", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -112,7 +113,7 @@ const CreatePasswordForm = () => {
             size="large"
             className="w-full mt-4 text-[3vw] lg:text-[0.8vw] sm:text-[1.5vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
           >
-            {isLoading ? "Loading..." : "Save changes"}
+            {isLoading ? <Loading h={5} w={5} /> : "Save changes"}
           </Button>
         </form>
       </div>

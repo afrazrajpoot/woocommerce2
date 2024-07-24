@@ -15,6 +15,7 @@ import { useGlobalContext } from "@/context/globalState";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import SignupModel from "../../authModel/register/SignupModel";
+import Loading from "../Loading";
 
 const Form = () => {
   const [register, { isLoading, isError, data, isSuccess }] =
@@ -156,7 +157,7 @@ const Form = () => {
           className="w-full mt-4 text-[2vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
           disabled={isLoading}
         >
-          {isLoading ? "Submitting..." : "Submit"}
+          {isLoading ? <Loading h={5} w={5} /> : "Submit"}
         </Button>
       </form>
     </>

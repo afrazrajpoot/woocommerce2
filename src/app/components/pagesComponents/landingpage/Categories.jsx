@@ -37,8 +37,9 @@ const Categories = () => {
         if (category) {
           params = { ...params, category: category.id };
         } else {
-          toast.error("Category not found",{
-            position: "top-right",});
+          toast.error("Category not found", {
+            position: "top-right",
+          });
           return;
         }
       }
@@ -47,8 +48,10 @@ const Categories = () => {
       const data = response.data;
       setProducts(data);
     } catch (error) {
-      toast.error("Network error please try again",{
-        position: "top-right",});
+      console.log(error);
+      toast.error("Network error please try again", {
+        position: "top-right",
+      });
     }
   };
   const handleClick = (label) => {
@@ -137,7 +140,7 @@ const Categories = () => {
           <figure className="grid grid-cols-1 w-full lg:max-w-[60vw] mt-[5vw] md:mt-0">
             {featurePackages?.length == 0 ? (
               <main className="w-full lg:max-w-[60vw] flex items-center h-[15vw] justify-center">
-                <Loading />
+                <Loading  h={10} w={10}/>
               </main>
             ) : (
               <Slider {...settings}>
@@ -193,7 +196,7 @@ const Categories = () => {
         <section className="w-full max-w-[90vw] ml-[4vw] mx-auto mt-[6vw] md:mt-[2vw]">
           {products?.length === 0 ? (
             <main className="w-full flex items-center justify-center h-[30vw]">
-              <Loading />
+              <Loading h={10} w={10} />
             </main>
           ) : (
             <>

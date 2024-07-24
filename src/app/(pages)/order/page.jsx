@@ -1,14 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import Sidebar from "../../components/Common/Sidebar/Sidebar";
+// import Sidebar from "../../components/Common/Sidebar/Sidebar";
+import Sidebar from "@/app/components/Common/Sidebar/Sidebar";
 import { useGlobalContext } from "@/context/globalState";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
-import Loading from "../components/Common/Loading";
+// import Loading from "../components/Common/Loading";
+import Loading from "@/app/components/Common/Loading";
 
 const Page = () => {
   const [data, setData] = useState([]); // Initialize as an empty array
@@ -74,7 +76,7 @@ const Page = () => {
         </h1>
         <div className="p-[2vw] bg-white border-[1px] border-[#F5F5F5] mt-[1vw] translate-y-[15vw] sm:translate-y-[7vw] lg:translate-y-0 rounded-lg flex flex-col lg:gap-[0vw] gap-[4vw]">
           {loading ? (
-            <Loading />
+            <Loading h={10} w={10} />
           ) : (
             data.map((order, index) => (
               <React.Fragment key={index}>

@@ -15,7 +15,10 @@ import { useGlobalContext } from "@/context/globalState";
 import { extractContent } from "@/app/utils/extractContent";
 import Loading from "@/app/components/Common/Loading";
 import { toast } from "sonner";
-import { useGetDataByIdMutation,  useUpdateSubscriptionMutation,} from "@/store/storeApi";
+import {
+  useGetDataByIdMutation,
+  useUpdateSubscriptionMutation,
+} from "@/store/storeApi";
 import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ params: { slug } }) => {
@@ -170,7 +173,6 @@ const ProductDetails = ({ params: { slug } }) => {
       },
     ];
 
-    
     fetchOrder({
       payment_method: "paypal",
       payment_method_title: "PayPal",
@@ -208,16 +210,15 @@ const ProductDetails = ({ params: { slug } }) => {
       ],
     });
   }
-  
+
   async function handleLoginCheckout() {
-    if(!login){
+    if (!login) {
       toast.error("Please login first", {
         position: "top-right",
       });
       navigate.push("/");
       return;
-    }
-    else if (!customerID || customerID === "null") {
+    } else if (!customerID || customerID === "null") {
       toast.error("Please register your account", {
         position: "top-right",
       });
@@ -310,7 +311,7 @@ const ProductDetails = ({ params: { slug } }) => {
                 </nav>
                 <Button
                   onClick={() => {
-                    if(!customerID || !login) {
+                    if (!customerID || !login) {
                       handleLoginCheckout();
                       return;
                     }
@@ -323,27 +324,31 @@ const ProductDetails = ({ params: { slug } }) => {
                 >
                   Add to cart
                 </Button>
-               {!customerID ?  <Button
-                  onClick={()=> { 
-                    if(!login || !customerID) {
-                      handleLoginCheckout();
-                      return;
-                    }
-                    addToCartHandler(productDetails);
-                    setCartDetail(false);
-                    navigate.push("/checkout");
-                  }}
-                  variant="contained"
-                  className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
-                >
-                  {loading ? "Loading..." : "BUY NOW"}
-                </Button> :  <Button
-                  onClick={hanldeSubscription}
-                  variant="contained"
-                  className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
-                >
-                  {loading ? "Loading..." : "Get This Pack"}
-                </Button>}
+                {!customerID ? (
+                  <Button
+                    onClick={() => {
+                      if (!login || !customerID) {
+                        handleLoginCheckout();
+                        return;
+                      }
+                      addToCartHandler(productDetails);
+                      setCartDetail(false);
+                      navigate.push("/checkout");
+                    }}
+                    variant="contained"
+                    className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
+                  >
+                    {loading ? <Loading h={5} w={5} /> : "BUY NOW"}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={hanldeSubscription}
+                    variant="contained"
+                    className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
+                  >
+                    {loading ? <Loading h={5} w={5} /> : "Get This Pack"}
+                  </Button>
+                )}
                 <section className="flex border-t-[1px] border-[#E5E5E5] mt-[3vw] lg:mt-[1vw] items-center justify-between p-[1vw]">
                   <p className="text-[#171717] font-medium text-[4vw] sm:text-[2vw] lg:text-[1vw]">
                     Compatibility

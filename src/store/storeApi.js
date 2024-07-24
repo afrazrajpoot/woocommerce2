@@ -48,6 +48,13 @@ export const storeApi = createApi({
         body: data,
       }),
     }),
+    uploadImage: builder.mutation({
+      query: (data) => ({
+        url: "/api/upload",
+        method: "POST",
+        body: data,
+      }),
+    }),
     getDataById: builder.mutation({
       query: (data) => ({
         url: "/api/getSubscriptionData",
@@ -73,4 +80,5 @@ export const {
   useSubmitSubscriptionMutation,
   useGetDataByIdMutation,
   useUpdateSubscriptionMutation,
+  useUploadImageMutation,
 } = storeApi;

@@ -218,7 +218,7 @@ const Store = () => {
         <section className="w-full max-w-[90vw] ml-[4vw] mx-auto mt-[6vw] md:mt-[2vw]">
           {products?.length === 0 ? (
             <main className="w-full flex items-center justify-center h-[30vw]">
-              <Loading />
+              <Loading h={10} w={10} />
             </main>
           ) : (
             <>

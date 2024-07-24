@@ -10,16 +10,19 @@ import {
 import React, { useEffect, useState } from "react";
 import Steper from "../../components/authModel/register/Steper";
 import { useGlobalContext } from "@/context/globalState";
-import CheckoutButton from "../components/CheckoutButton";
+// import CheckoutButton from "../components/CheckoutButton";
 import { loadScript } from "@paypal/paypal-js";
 import { toast } from "sonner";
-import SuccessPaymentModel from "../components/authModel/resetModal/SuccessPaymentModel";
+// import SuccessPaymentModel from "../components/authModel/resetModal/SuccessPaymentModel";
+import SuccessPaymentModel from "@/app/components/authModel/resetModal/SuccessPaymentModel";
 import axios from "axios";
 import { useSubmitSubscriptionMutation } from "@/store/storeApi";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/components/Common/Loading";
 
 const Page = () => {
   const navigate = useRouter();
+  const [loading, setLoading] = useState(false);
   const paymentData = [
     { img: "/img/visaCard.png", value: "visa" },
     { img: "/img/masterCard.png", value: "mastercard" },
@@ -149,9 +152,10 @@ const Page = () => {
     );
   };
   const handlePayment = () => {
+    setLoading(true);
     if (customerID) {
       paymentMethod();
-
+      setLoading(false);
       return;
     }
     toast.error("Please register your account", {
@@ -164,6 +168,7 @@ const Page = () => {
       progress: undefined,
       theme: "light",
     });
+    setLoading(false);
     navigate.push("/accountdetails");
   };
 
@@ -293,7 +298,7 @@ const Page = () => {
                 className="w-full lg:mt-[1.5vw] mt-[3vw] sm:text-[1.5vw] text-[2.5vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
                 onClick={handlePayment}
               >
-                Continue to Payment
+                {loading ? <Loading h={5} w={5} /> : "Continue to Payment"}
               </Button>
               <div
                 id="paypal-button-container"

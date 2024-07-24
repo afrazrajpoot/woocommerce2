@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import Sidebar from "../components/Common/Sidebar/Sidebar";
+// import Sidebar from "../components/Common/Sidebar/Sidebar";
+import Sidebar from "@/app/components/Common/Sidebar/Sidebar";
 import { useGlobalContext } from "@/context/globalState";
 import Link from "next/link";
-import Loading from "../components/Common/Loading";
+// import Loading from "../components/Common/Loading";
+import Loading from "@/app/components/Common/Loading";
 
 const DownloadProduct = ({
   img,
@@ -74,7 +76,7 @@ const Page = () => {
         </h1>
         <div className="p-[2vw] w-full bg-white border-[1px] border-[#F5F5F5] mt-[1vw] translate-y-[20vw] sm:translate-y-[8vw] lg:translate-y-[5vw] rounded-lg">
           {loading ? (
-            <Loading />
+            <Loading h={10} w={10} />
           ) : (
             <div className="flex flex-col lg:grid lg:grid-cols-3 sm:flex-row lg:gap-[1vw] gap-[5vw] items-center">
               {fetchedPersonalOrders?.data?.map((elem, ind) => (

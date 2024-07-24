@@ -3,11 +3,14 @@
 import { useGlobalContext } from "@/context/globalState";
 import { accountForm2, accoutForm } from "@/data/data";
 import { Avatar, Button } from "@mui/material";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import Loading from "../../Common/Loading";
+import { useUploadImageMutation } from "@/store/storeApi";
 
 const FormInput = ({ label, type, name, value, onChange }) => {
   return (
@@ -30,8 +33,11 @@ const FormInput = ({ label, type, name, value, onChange }) => {
 };
 
 const AccountForm = () => {
+  const ref = useRef();
   const session = useSession();
   const [user, setUser] = useState({});
+  const [file, setFile] = useState(null);
+  const [url, imgUrl] = useState("");
   // console.log(session.data.user.name, "session data");
   const navigate = useRouter();
   const {
@@ -44,6 +50,8 @@ const AccountForm = () => {
     setCustomerID,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
+  const [uploadTheImage, { isLoading, error, isError, isSuccess }] =
+    useUploadImageMutation();
   const {
     handleSubmit,
     control,
@@ -176,19 +184,85 @@ const AccountForm = () => {
       });
     }
   };
+  function uploadImage() {
+    ref.current.click();
+  }
 
+  async function uploadImageOnServer() {
+    try {
+      if (!file) {
+        toast.error("Please select the image to upload", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", file);
+
+      uploadTheImage(formData);
+      // console.log(res, "res");
+    } catch (error) {
+      toast.error("Failed to upload image", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }
   useEffect(() => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     setUser(userFromLocal);
   }, []);
-  // console.log(user, "useree");
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Image upload successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [isSuccess]);
+  // console.log(file, "useree");
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">
         <header className="flex items-start gap-[1vw] w-full">
-          <figure className="">
+          <input
+            type="file"
+            className="hidden"
+            name=""
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+              const url = URL.createObjectURL(e.target.files[0]);
+              imgUrl(url);
+            }}
+            id=""
+            ref={ref}
+          />
+          <figure className="hover:cursor-pointer" onClick={uploadImage}>
             <Avatar className="w-[5vw] h-[5vw]">
-              {loggedUser?.fullName[0]}
+              {url ? (
+                <img src={url} alt="avatar" className="" />
+              ) : (
+                loggedUser?.fullName[0]
+              )}
             </Avatar>
             {/* <img src="/img/accountAvatar.png" alt="avatar" className="" /> */}
           </figure>
@@ -197,8 +271,11 @@ const AccountForm = () => {
               We only support .JPG, .JPEG, or .PNG file.
             </p>
             <div className="mt-[1vw] flex gap-[1vw]">
-              <Button className="bg-[#FF387A] text-white sm:text-[1.5vw] lg:text-[0.7vw] text-[2vw] font-bold hover:bg-[#FF387A] lg:py-[0.5vw] py-[1vw]   rounded-lg px-[2vw] ">
-                upload photo
+              <Button
+                onClick={uploadImageOnServer}
+                className="bg-[#FF387A] text-white sm:text-[1.5vw] lg:text-[0.7vw] text-[2vw] font-bold hover:bg-[#FF387A] lg:py-[0.5vw] py-[1vw]   rounded-lg px-[2vw] "
+              >
+                {isLoading ? <Loading h={5} w={5} /> : "upload photo"}
               </Button>
               <Button
                 variant="outlined"
@@ -382,7 +459,13 @@ const AccountForm = () => {
             variant="outlined"
             className="text-[2.5vw] lg:text-[0.7vw] sm:text-[1.5vw] text-[#FF387A] border-[1.5px] font-bold border-[#FF387A] hover:border-[#FF387A] lg:py-[0.6vw] py-[2vw] px-[3vw] lg:px-[1vw]"
           >
-            {`${loading ? "loading...." : customerID ? "Update" : "Create"}`}
+            {loading ? (
+              <Loading h={5} w={5} />
+            ) : customerID ? (
+              "Update"
+            ) : (
+              "Create"
+            )}
           </Button>
         </form>
       </main>

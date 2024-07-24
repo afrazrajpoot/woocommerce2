@@ -5,6 +5,7 @@ import { forgetForm } from "@/data/data";
 import { useForgotPasswordMutation } from "@/store/storeApi";
 import { useGlobalContext } from "@/context/globalState";
 import { toast } from "sonner";
+import Loading from "../../Common/Loading";
 
 const ForgetForm = () => {
   const { dataForResetPassword, setDataForResetPassword } = useGlobalContext();
@@ -75,7 +76,7 @@ const ForgetForm = () => {
         className="w-full mt-4 text-[2vw] lg:text-[0.8vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
         disabled={isLoading}
       >
-        {isLoading ? "Sending..." : "Send me a reset link"}
+        {isLoading ? <Loading h={5} w={5} /> : "Send me a reset link"}
       </Button>
     </form>
   );

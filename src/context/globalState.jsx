@@ -44,7 +44,7 @@ export const UserProvider = ({ children }) => {
     otp: "",
     newPassword: "",
   });
-const [state,setState] = useState(false)
+  const [state, setState] = useState(false);
   const [cartDetail, setCartDetail] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({
     username: "",
