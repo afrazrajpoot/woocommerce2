@@ -52,6 +52,7 @@ const AccountForm = () => {
     setCustomerDetails,
     customerID,
     setCustomerID,
+    setSidebarImage,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const [uploadTheImage, { isLoading, error, isError, isSuccess, data }] =
@@ -238,7 +239,7 @@ const AccountForm = () => {
     if (isSuccess) {
       // console.log(data, "profileData");
       localStorage.setItem("user", JSON.stringify(data));
-
+      setSidebarImage(true);
       toast.success("Image upload successfully", {
         position: "top-right",
         autoClose: 5000,
@@ -288,7 +289,7 @@ const AccountForm = () => {
                   url ? (
                     <img src={url} alt="avatar" className="w-full h-full" />
                   ) : (
-                    loggedUser?.fullName[0]
+                    <Avatar>{loggedUser?.fullName[0]}</Avatar>
                   )
                 ) : (
                   <img
@@ -300,7 +301,7 @@ const AccountForm = () => {
               </Avatar>
             ) : (
               <Avatar>
-                <img src={`${session?.data?.user?.image}`} alt="afrazff" />
+                <img src={`${session?.data?.user?.image}`} alt="google image" />
               </Avatar>
             )}
           </figure>

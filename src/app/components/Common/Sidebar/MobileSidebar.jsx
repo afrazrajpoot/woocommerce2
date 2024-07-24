@@ -10,12 +10,18 @@ import { useGlobalContext } from "@/context/globalState";
 import { headerData, menueData, otherData } from "@/data/data";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import { Avatar } from "@mui/material";
 
 export default function MobileSidebar() {
   const [image, setImage] = React.useState(null);
   const { session } = useSession();
-  const { mobileSidebarOpen, toggleSidebar, customerDetails, logout } =
-    useGlobalContext();
+  const {
+    mobileSidebarOpen,
+    toggleSidebar,
+    customerDetails,
+    logout,
+    siderbarImage,
+  } = useGlobalContext();
 
   const stopPropagation = (e) => {
     e.stopPropagation();
@@ -36,23 +42,23 @@ export default function MobileSidebar() {
     >
       <header className="flex items-center gap-[35vw] w-full px-[3vw] mt-[6vw]">
         <section className="flex items-center gap-[1vw]">
-          <figure className="">
+          <Avatar className="">
             {session?.data?.user?.image ? (
               <img
                 src={session.data.user.image}
                 alt="user"
-                className="w-[10vw] object-cover rounded-full"
+                className=" object-cover rounded-full"
               />
             ) : (
               image && (
                 <img
                   src={image}
                   alt="user"
-                  className="w-[10vw] object-cover rounded-full"
+                  className=" object-cover rounded-full"
                 />
               )
             )}
-          </figure>
+          </Avatar>
           <div>
             <p className="text-[4vw] sm:text-[2.5vw] font-bold ">
               {customerDetails?.username}
@@ -178,7 +184,7 @@ export default function MobileSidebar() {
   React.useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     setImage(userData?.user?.img);
-  }, []);
+  }, [siderbarImage]);
 
   console.log(image, "my");
   return (
