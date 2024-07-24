@@ -37,8 +37,9 @@ export const UserProvider = ({ children }) => {
   const [openForgetModel, setForgetModel] = useState(false);
   const [openOtpModel, setOtpModel] = useState(false);
   const [openResetModel, setResetModel] = useState(false);
-  const [siderbarImage,setSidebarImage]=useState(false)
+  const [siderbarImage, setSidebarImage] = useState(false);
   const [otpReset, setOtpReset] = useState();
+  const [active, setActive] = useState(false);
   const [dataForResetPassword, setDataForResetPassword] = useState({
     oldPassword: "",
     email: "",
@@ -225,7 +226,10 @@ export const UserProvider = ({ children }) => {
         setState,
         cartDetail,
         setCartDetail,
-        siderbarImage,setSidebarImage
+        siderbarImage,
+        setSidebarImage,
+        active,
+        setActive,
       }}
     >
       {children}

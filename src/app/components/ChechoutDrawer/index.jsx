@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Drawer } from "@mui/material";
 
 const ChechoutDrawer = () => {
+  const { active, setActive } = useGlobalContext();
   let cartData = [
     {
       img: "/img/upload.png",
@@ -41,14 +42,13 @@ const ChechoutDrawer = () => {
     cartCount,
     cartDetail,
     setCartDetail,
-    
   } = useGlobalContext();
   const [totalPrice, setTotalPrice] = useState(subtotal);
 
   const navigate = useRouter();
   function addCheckoutDetail() {
     showCart(false);
-
+    setActive(true);
     navigate.push("/checkout");
   }
 

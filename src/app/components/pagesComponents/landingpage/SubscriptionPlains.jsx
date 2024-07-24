@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 
 const SubscriptionPlans = () => {
   const navigate = useRouter();
-  const { selectedPlan, setSelectedPlan } = useGlobalContext();
+  const { selectedPlan, setSelectedPlan, setActive } = useGlobalContext();
 
-  const handlePlanSelect = (index, price, features,available) => {
-    const newSelectedPlan = { index, price, features,available };
+  const handlePlanSelect = (index, price, features, available) => {
+    const newSelectedPlan = { index, price, features, available };
     setSelectedPlan(newSelectedPlan);
+    setActive(true);
     navigate.push("/payment");
     // console.log("Selected Plan Details:", selectedPlan);
   };

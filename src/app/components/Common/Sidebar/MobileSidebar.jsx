@@ -186,7 +186,7 @@ export default function MobileSidebar() {
     setImage(userData?.user?.img);
   }, [siderbarImage]);
 
-  console.log(image, "my");
+  // console.log(image, "my");
   return (
     <div>
       <Drawer open={mobileSidebarOpen} onClose={toggleSidebar}>

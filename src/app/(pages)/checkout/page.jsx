@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 const page = () => {
   const [checkoutDetail, setCheckoutDetail] = useState();
-  const [active, setActive] = useState(false);
+
   const [navigation, setNavigation] = useState(false);
   const navigate = useRouter();
   const {
@@ -21,7 +21,10 @@ const page = () => {
     CreateWooCommerceData,
     customerID,
     setState,
-    cartDetail,setCartDetail
+    cartDetail,
+    setCartDetail,
+    active,
+    setActive,
   } = useGlobalContext();
   const fetchOrder = async (data) => {
     try {
@@ -171,9 +174,9 @@ const page = () => {
                 localStorage.removeItem("productsAddedToCart");
                 localStorage.removeItem("checkout");
                 setNavigation(true);
-                setCartDetail(true)
-                setActive(true);
-                setState(true)
+                setCartDetail(true);
+
+                setState(true);
                 toast.success("Order created", {
                   position: "top-right",
                   autoClose: 3000,
@@ -199,7 +202,7 @@ const page = () => {
               });
             },
             onError: (err) => {
-              console.log(err, "error");
+              // console.log(err, "error");
               toast.error("Payment error", {
                 position: "top-right",
                 autoClose: 3000,
@@ -237,8 +240,6 @@ const page = () => {
   useEffect(() => {
     if (navigation) {
       navigate.push("/downloads");
-
-     
     }
   }, [navigation]);
   return (
@@ -343,11 +344,13 @@ const page = () => {
                     key={ind}
                   >
                     <p className="font-medium lg:text-[0.9vw] sm:text-[2vw] text-[3.5vw]">
-                     {cartDetail?"":product?.name}
+                      {cartDetail ? "" : product?.name}
                     </p>
                     <p className="lg:text-[1vw] text-[2.5vw] font-bold lg:font-medium sm:text-[1.5vw] text-[#FF689A]">
                       $
-                      {cartDetail?"":product?.sale_price
+                      {cartDetail
+                        ? ""
+                        : product?.sale_price
                         ? product?.sale_price
                         : product?.regular_price}
                     </p>
@@ -360,7 +363,7 @@ const page = () => {
                   Subtotal
                 </p>
                 <p className="text-[#FF689A] font-bold lg:font-semibold lg:text-[1vw] text-[2.5vw] sm:text-[1.5vw] lg:mt-[0vw] mt-[3vw]">
-                  ${cartDetail?"0":totalPrice}
+                  ${cartDetail ? "0" : totalPrice}
                 </p>
               </div>
               <Button

@@ -212,7 +212,7 @@ const ProductDetails = ({ params: { slug } }) => {
   }
 
   async function handleLoginCheckout() {
-    if (!login) {
+    if (!customerDetails) {
       toast.error("Please login first", {
         position: "top-right",
       });
@@ -311,7 +311,7 @@ const ProductDetails = ({ params: { slug } }) => {
                 </nav>
                 <Button
                   onClick={() => {
-                    if (!customerID || !login) {
+                    if (!customerID) {
                       handleLoginCheckout();
                       return;
                     }
@@ -346,7 +346,7 @@ const ProductDetails = ({ params: { slug } }) => {
                     variant="contained"
                     className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
                   >
-                    {loading ? <Loading  /> : "Get This Pack"}
+                    {loading ? <Loading /> : "Get This Pack"}
                   </Button>
                 )}
                 <section className="flex border-t-[1px] border-[#E5E5E5] mt-[3vw] lg:mt-[1vw] items-center justify-between p-[1vw]">
