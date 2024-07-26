@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     const { id } = params;
-    // console.log(id, "my id");
     if (!id) {
       return NextResponse.json(
         { message: "userId parameter is required" },
@@ -12,7 +11,9 @@ export async function GET(req, { params }) {
       );
     }
 
-    const subscription = await Subscription.findById(id);
+    const subscription = await Subscription.findById(id)
+
+    console.log("Found subscription:", subscription);
 
     if (!subscription) {
       return NextResponse.json(

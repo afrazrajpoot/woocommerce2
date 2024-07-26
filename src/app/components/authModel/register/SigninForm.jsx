@@ -78,7 +78,7 @@ const SigninForm = () => {
       if (customerID) {
         navigate.push("/");
       } else {
-        navigate.push("/accountdetails");
+        window.location.href = '/accountdetails';
       }
     }
   }, [isError, isSuccess]);

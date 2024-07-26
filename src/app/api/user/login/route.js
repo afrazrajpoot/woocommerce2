@@ -3,6 +3,7 @@ import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken"; // Import jsonwebtoken
+import Subscription from "@/models/subscription";
 
 connection();
 
@@ -45,9 +46,13 @@ export async function POST(req) {
       expiresIn: "1h", // Token expiration time
     });
 
+    const subscriptionPlan = await Subscription.find({ userId: user._id });
+
+
     const response = NextResponse.json({
       message: "Login successful",
       user,
+      subscriptionPlan,
     });
 
     // Set the JWT token in a cookie

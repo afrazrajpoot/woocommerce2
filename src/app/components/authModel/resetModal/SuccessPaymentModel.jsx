@@ -68,7 +68,7 @@ export default function SuccessPaymentModel({ success }) {
           </Typography>
 
           <div className="w-full flex justify-center">
-            <Button
+            <Button href="/subscriptions"
               onClick={() => navigate.push("/store")}
               variant="outlined"
               className="mt-[2.5vw] p-[1vw]"
@@ -86,7 +86,7 @@ export default function SuccessPaymentModel({ success }) {
                 },
               }}
             >
-              Download your invoice
+              Go to Subscription Page
             </Button>
           </div>
         </Box>

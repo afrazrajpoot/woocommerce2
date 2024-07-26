@@ -3,12 +3,19 @@ import SubscriptionCard from "../../Cards/SubscriptionCard";
 import { subscriptionPlans } from "@/data/data";
 import { useGlobalContext } from "@/context/globalState";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const SubscriptionPlans = () => {
   const navigate = useRouter();
-  const { selectedPlan, setSelectedPlan, setActive } = useGlobalContext();
+  const { selectedPlan, setSelectedPlan, setActive, login } = useGlobalContext();
 
   const handlePlanSelect = (index, price, features, available) => {
+    if (!login) {
+      toast.error("Please login first", {
+        position: "top-right",
+      });
+      return;
+    }
     const newSelectedPlan = { index, price, features, available };
     setSelectedPlan(newSelectedPlan);
     setActive(true);
@@ -39,16 +46,6 @@ const SubscriptionPlans = () => {
                 )
               }
             />
-            {/* {selectedPlan && selectedPlan.index === index && (
-              <div>
-                Selected Plan: ${selectedPlan.price}
-                <ul>
-                  {selectedPlan.features.map((feature, i) => (
-                    <li key={i}>{feature}</li>
-                  ))}
-                </ul>
-              </div>
-            )} */}
           </div>
         ))}
       </section>

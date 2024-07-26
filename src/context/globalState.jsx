@@ -40,6 +40,7 @@ export const UserProvider = ({ children }) => {
   const [siderbarImage, setSidebarImage] = useState(false);
   const [otpReset, setOtpReset] = useState();
   const [active, setActive] = useState(false);
+  const [isActiveSubscription, setIsActiveSubscription] = useState(false);
   const [dataForResetPassword, setDataForResetPassword] = useState({
     oldPassword: "",
     email: "",
@@ -137,6 +138,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const user = localStorage.getItem("user");
+    const subscriptionId = localStorage.getItem("subscriptionId");
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
@@ -146,6 +148,11 @@ export const UserProvider = ({ children }) => {
           username: parsedUser?.user?.fullName,
           email: parsedUser?.user?.email,
         });
+        const subsPlan = parsedUser?.subscriptionPlan;
+        if(subsPlan?.length > 0 || subscriptionId) {
+          setIsActiveSubscription(true);
+          console.log("isActiveSubscription", isActiveSubscription);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -155,7 +162,6 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("user"));
     if (data) {
-      // console.log(login, "globaly");
       setLogin(data);
     } else {
       setLogin(false);
@@ -229,7 +235,7 @@ export const UserProvider = ({ children }) => {
         siderbarImage,
         setSidebarImage,
         active,
-        setActive,
+        setActive, isActiveSubscription, setIsActiveSubscription
       }}
     >
       {children}

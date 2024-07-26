@@ -44,7 +44,7 @@ export async function POST(req) {
 
     // Fetch and update the user
     const user = await User.findById({ _id: id });
-    // console.log(user, "user");
+    console.log(user, "user");
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

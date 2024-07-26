@@ -9,6 +9,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { faqCardData, faqData } from "@/data/data";
 import Footer from "../../components/Common/Footer/Footer";
 import FaqCard from "../../components/Cards/FaqCard";
+import Link from "next/link";
 
 export default function DisabledAccordion() {
   const [expanded, setExpanded] = React.useState(false);
@@ -21,9 +22,9 @@ export default function DisabledAccordion() {
     <main className="bg-[#FAFAFA]">
       <section className="lg:translate-y-[5vw] translate-y-[18vw] sm:translate-y-[10vw] pb-[4vw]">
         <article className="w-full max-w-[80vw] m-auto">
-          <button className="border-[1px] border-[#FF689A] sm:text-[1.5vw] bg-[#ff689a34] p-[0.6vw] rounded-lg text-[#FF689A] lg:mt-[1vw] lg:text-[1vw] text-[3vw]">
+          <Link href="/detailarticles" className="border-[1px] border-[#FF689A] sm:text-[1.5vw] bg-[#ff689a34] p-[0.6vw] rounded-lg text-[#FF689A] lg:mt-[1vw] lg:text-[1vw] text-[3vw]">
             Tutorials
-          </button>
+          </Link>
           <h1 className="lg:text-[2vw] text-[5vw] font-bold mt-[5vw]  sm:text-[3vw] sm:mt-[4vw] ">
             Frequently Asked Questions
           </h1>
@@ -52,8 +53,7 @@ export default function DisabledAccordion() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className="flex lg:flex-row  flex-col items-start gap-[1vw]">
-                {/* <img src={item.img} alt={item.title} className="" /> */}
-                <div className="lg:w-[100vw] h-[50vh]  lg:h-[50vh]">
+                <div className="lg:w-[100vw] h-[30vh]  lg:h-[40vh]">
                   <iframe
                     src={item?.src}
                     title="YouTube video player"
@@ -64,7 +64,7 @@ export default function DisabledAccordion() {
                     className="w-full h-full"
                   ></iframe>
                 </div>
-                <Typography className="lg:text-[1vw] text-[3vw]">
+                <Typography className="lg:text-[1vw] mt-[2vw] sm:mt-[0.7vw] text-[3vw]">
                   {item.desc}
                 </Typography>
               </AccordionDetails>

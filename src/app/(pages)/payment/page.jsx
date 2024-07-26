@@ -198,7 +198,7 @@ const Page = () => {
   useEffect(() => {
     if (isSuccess) {
       // console.log(data.subscription._id, "myData");
-      localStorage.setItem("subId", data?.subscription?._id);
+      localStorage.setItem("subscriptionId", data?.subscription?._id);
     }
     const id = JSON.parse(localStorage.getItem("user"));
     // console.log(id.user._id, "user");

@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@mui/material";
 import Sidebar from "../../components/Common/Sidebar/Sidebar";
 import LinearProgress, {
   linearProgressClasses,
@@ -14,6 +13,7 @@ import {
 import { toast } from "sonner";
 import Loading from "@/app/components/Common/Loading";
 import jsPDF from "jspdf";
+import Link from "next/link";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -30,22 +30,23 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 const page = () => {
   const [id, setId] = useState();
-  const { data, isLoading, isError } = useGetSubscriptionDataByIdQuery(id);
-  // console.log(data, "my data");
-  // getSubscriptionData();
+  const { data, isLoading } = useGetSubscriptionDataByIdQuery(id);
 
   const startDate = new Date(data?.subscription?.startDate);
-  const formattedDate = startDate.toLocaleDateString();
   const formattedTime = startDate.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const [deletePlan, { isLoading: loading, isError: error }] =
-    useDeleteSubscriptionMutation();
+  const [deletePlan] = useDeleteSubscriptionMutation();
   async function cancelPlan() {
+    if (!id) {
+      toast.error("No plan selected to delete.", {
+        position: "top-right",
+      });
+      return;
+    }
     let confirm;
     confirm = window.confirm("Are you sure you want to delete this plan?");
-    // console.log(confirm, "confirm");
     try {
       if (confirm) {
         await deletePlan(id);
@@ -61,25 +62,39 @@ const page = () => {
       });
     }
   }
-  const handleDownload = (order) => {
+  const handleDownload = () => {
     const doc = new jsPDF();
-    doc.text("Invoice", 10, 10);
-    doc.text(`User Name: ${data?.subscription?.username}`, 10, 20);
-    doc.text(`Price: $${data?.subscription.price}`, 10, 30);
-
-    doc.text(`Plan type: ${data?.subscription?.planType}`, 10, 50);
-
-    doc.text(`Email: ${data.subscription.email}`, 10, 80);
-
+  
+    // Add a title
+    doc.setFontSize(18);
+    doc.addImage("/img/Logo.png", "PNG", 10, 10, 15, 15);
+    doc.text("Invoice", 105, 20, null, null, "center");
+    // Add a horizontal line
+    doc.setLineWidth(0.5);
+    doc.line(10, 25, 200, 25);
+    // Set font size for the details
+    doc.setFontSize(12);
+    // Define the start positions
+    const startX = 20;
+    const startY = 35;
+    const lineSpacing = 10;
+    // Add the details
+    const details = [
+      `User Name: ${data?.subscription?.username || ''}`,
+      `Price: $${data?.subscription?.price || ''}`,
+      `Plan Type: ${data?.subscription?.planType || ''}`,
+      `Email: ${data?.subscription?.email || ''}`,
+    ];
+    details.forEach((detail, index) => {
+      doc.text(detail, startX, startY + index * lineSpacing);
+    });
     doc.save("invoice.pdf");
   };
   useEffect(() => {
-    const userId = localStorage.getItem("subId");
-
+    const userId = localStorage.getItem("subscriptionId");
     setId(userId);
   }, []);
-  // console.log(id, "userId milliseconds");
-  // const planType =
+
   return (
     <main className="bg-[#FAFAFA] ">
       <Sidebar />
@@ -118,9 +133,7 @@ const page = () => {
                   <h1 className="lg:text-[1.8vw] text-[4vw] sm:text-[4.5vw] font-semibold text-[#151515]">
                     {isLoading ? (
                       <Loading />
-                    ) : data?.subscription?.downloadLimit <= 0 ? (
-                      "0"
-                    ) : (
+                    ) : !data?.subscription?.downloadLimit ? 0 : (
                       data?.subscription?.downloadLimit
                     )}
                   </h1>
@@ -180,9 +193,11 @@ const page = () => {
             >
               Cancel Plan
             </button>
+            <Link href="/" className="w-full block">
             <button className="hover:bg-[#ED544E] hover:text-white text-center rounded-md w-full text-[#ED544E] bg-white border-[0.1vw] p-[0.5vw] m-[2.5vw] sm:m-[0.5vw] border-[#ED544E]">
-              Change Plan
+              {!data ? 'Subscribe' : 'Change Plan'}
             </button>
+            </Link>
           </footer>
         </aside>
       </div>

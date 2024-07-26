@@ -26,32 +26,17 @@ const ProductDetails = ({ params: { slug } }) => {
   const [productDetails, setProductDetails] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [id, setId] = useState(0);
+
   const {
-    fetchWooCommerceData,
-    setCartCount,
-
-    showCart,
-
-    productsAddedToCart,
-    setProductsAddedToCart,
-    customerDetails,
-    CreateWooCommerceData,
-    customerID,
-    login,
-    setCartDetail,
+    fetchWooCommerceData, setCartCount, showCart, productsAddedToCart, setProductsAddedToCart,
+    customerDetails, CreateWooCommerceData, customerID, login, setCartDetail, isActiveSubscription
   } = useGlobalContext();
-
-  const [subtotal, setSubtotal] = React.useState(0);
+  const [subTotal, setSubtotal] = React.useState(0);
   const [loading, setLoading] = useState(false);
-  const [getSubscriptionData, { isError, isLoading, data: subscriptionData }] =
-    useGetDataByIdMutation();
+  const [getSubscriptionData] = useGetDataByIdMutation();
+  const [ updateLimit] = useUpdateSubscriptionMutation();
+  const [deleteSubscription] = useDeleteSubscriptionMutation();
 
-  const [
-    updateLimit,
-    { isError: limitError, isLoading: limitLoading, data: limitData },
-  ] = useUpdateSubscriptionMutation();
-  const [deleteSubscription, { isError: subscriptionError }] =
-    useDeleteSubscriptionMutation();
   useEffect(() => {
     const calculateSubtotal = () => {
       let total = 0;
@@ -114,7 +99,7 @@ const ProductDetails = ({ params: { slug } }) => {
     if (slug) {
       fetchProducts();
     }
-    const subscriptionId = localStorage.getItem("subId");
+    const subscriptionId = localStorage.getItem("subscriptionId");
     setId(subscriptionId);
   }, [slug]);
 
@@ -130,12 +115,8 @@ const ProductDetails = ({ params: { slug } }) => {
   const mainVideo = extractContent(productDetails?.short_description);
 
   const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    arrows: true,
-    slidesToShow: 3,
-    slidesToScroll: 1,
+    dots: false, infinite: true, speed: 500, arrows: true,
+    slidesToShow: 3,  slidesToScroll: 1,
     responsive: [
       {
         breakpoint: 1024,
@@ -216,11 +197,17 @@ const ProductDetails = ({ params: { slug } }) => {
   }
 
   async function handleLoginCheckout() {
-    if (!customerDetails) {
+    if(!login){
       toast.error("Please login first", {
         position: "top-right",
       });
-      navigate.push("/");
+      return
+    }
+   else if (!customerDetails) {
+      toast.error("Please login first", {
+        position: "top-right",
+      });
+      navigate.push("/accountdetails");
       return;
     } else if (!customerID || customerID === "null") {
       toast.error("Please register your account", {
@@ -232,31 +219,44 @@ const ProductDetails = ({ params: { slug } }) => {
   }
 
   async function hanldeSubscription() {
+    setLoading(true);
     const res = await getSubscriptionData({ id: id });
-    const limit = res.data?.subscription?.downloadLimit;
-    const lastDate = res.data?.subscription?.endDate;
-    // console.log(res, "my user response");
-    await updateLimit(id);
-    if (limit <= 0) {
-      toast.error("No more downloads available please get subscription pack", {
-        position: "top-right",
-      });
-      return;
-    }
-    if (lastDate > new Date()) {
-      deleteSubscription(id);
-      toast.error("Your subscription is expired", {
-        position: "top-right",
-      });
-      return;
-    }
-
-    createSubscriptionOrder();
-
-    toast.success("Order create successfully", {
+ try {
+  if (!res.data?.subscription) {
+    toast.error("Please get subscription", {
       position: "top-right",
     });
-    navigate.push("/downloads");
+    return;
+  }
+  const limit = res.data?.subscription?.downloadLimit;
+  const lastDate = res.data?.subscription?.endDate;
+  await updateLimit(id);
+  if (limit <= 0) {
+    toast.error("No more downloads available please get subscription pack", {
+      position: "top-right",
+    });
+    return;
+  }
+  if (lastDate > new Date()) {
+    deleteSubscription(id);
+    toast.error("Your subscription is expired", {
+      position: "top-right",
+    });
+    return;
+  }
+
+  createSubscriptionOrder();
+  toast.success("Order create successfully", {
+    position: "top-right",
+  });
+ } catch (error) {
+  toast.error("Please try again later", {
+    position: "top-right",
+  })
+ } finally {
+  setLoading(false);
+  navigate.push("/downloads");
+ }
   }
 
   return (
@@ -327,16 +327,17 @@ const ProductDetails = ({ params: { slug } }) => {
                 >
                   Add to cart
                 </Button>
-                {!customerID ? (
+                {!customerID || isActiveSubscription === false ? (
                   <Button
                     onClick={() => {
                       if (!login || !customerID) {
                         handleLoginCheckout();
                         return;
-                      }
-                      addToCartHandler(productDetails);
+                      }else{
+                        addToCartHandler(productDetails);
                       setCartDetail(false);
                       navigate.push("/checkout");
+                      }
                     }}
                     variant="contained"
                     className="bg-[#FF387A] ml-[0.5vw] mt-[4vw] lg:mt-[1vw] border-[1px] border-[#FF387A] font-medium hover:font-medium text-[3.5vw] sm:text-[2vw] lg:text-[1vw] text-white hover:shadow-md hover:bg-[#ff387af6] hover:border-[#ff387af6] p-[2.5vw] md:p-[0.5vw] rounded-md w-full text-center"
@@ -407,8 +408,9 @@ const ProductDetails = ({ params: { slug } }) => {
             <main className="flex flex-col lg:flex-col lg:gap-[5vw] items-start justify-evenly w-full">
               {extractedContent?.videos?.slice(0, 2).map((video, index) => (
                 <main key={index} className="w-full">
+                  <h1 className="text-[#171717] mb-[0.5vw] text-[5vw] md:text-[2vw] font-medium">{index == 0 ? "Related Video" : "All Templates (Promo Videos)"}</h1>
                   <iframe
-                    className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[30vw] sm:max-w-[85vw] lg:max-w-[41vw]"
+                    className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[25vw] sm:max-w-[85vw] lg:max-w-[41vw]"
                     key={index}
                     src={video}
                     alt="store details"
@@ -524,14 +526,14 @@ const ProductDetails = ({ params: { slug } }) => {
           <div className="grid grid-cols-1 gap-[2vw] w-full">
             <Slider {...settings}>
               {relatedProducts?.map((product, index) => {
-                const { images, regular_price, sale_price, name } =
+                const { regular_price, sale_price, name } =
                   product?.data;
                 return (
                   <div key={index} className="w-full">
                     <Pack
                       discountedPrice={sale_price}
                       actualPrice={regular_price}
-                      image={images?.[0]?.src}
+                      image={product?.data?.images?.[0]?.src}
                       title={name}
                     />
                   </div>

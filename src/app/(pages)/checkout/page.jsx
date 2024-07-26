@@ -187,6 +187,9 @@ const page = () => {
                   progress: undefined,
                   theme: "light",
                 });
+                setTimeout(() => {
+                  navigate.push("/downloads");
+                }, 3000);
               });
             },
             onCancel: (data) => {
@@ -237,6 +240,8 @@ const page = () => {
     });
     navigate.push("/accountdetails");
   };
+
+
   useEffect(() => {
     if (navigation) {
       navigate.push("/downloads");

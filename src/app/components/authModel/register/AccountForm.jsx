@@ -41,33 +41,17 @@ const AccountForm = () => {
   const [file, setFile] = useState(null);
   const [url, imgUrl] = useState("");
   const [profileImage, setProfileImage] = useState(false);
-
-  // console.log(session.data.user.name, "session data");
   const navigate = useRouter();
-  const {
-    CreateWooCommerceData,
-    updateWooCommerceData,
-    loggedUser,
-    customerDetails,
-    setCustomerDetails,
-    customerID,
-    setCustomerID,
-    setSidebarImage,
+  const { CreateWooCommerceData, updateWooCommerceData, loggedUser, customerDetails, 
+   customerID, setCustomerID, setSidebarImage,setCustomerDetails
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  const [uploadTheImage, { isLoading, error, isError, isSuccess, data }] =
-    useUploadImageMutation();
+  const [uploadTheImage, { isLoading, isSuccess, data }] = useUploadImageMutation();
   const [googleImage, setGoogleImage] = useState("");
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-    trigger,
-  } = useForm({
+  const { handleSubmit, control, formState: { errors }, reset } = useForm({
     defaultValues: {
-      username: customerDetails?.username || loggedUser?.fullName || "",
-      email: customerDetails?.email || loggedUser?.email || "",
+      username: loggedUser?.fullName || customerDetails?.username || "",
+      email: loggedUser?.email || customerDetails?.email || "",
       phone: customerDetails?.phone || "",
       address1: customerDetails?.address1 || "",
       city: customerDetails?.city || "",
@@ -85,42 +69,7 @@ const AccountForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      if (user) {
-        //   if (
-        //     data?.username !== localUser.fullName ||
-        //     data?.email !== localUser.email
-        //   ) {
-        //     toast.error("Add login email and username", {
-        //       position: "top-right",
-        //       autoClose: 5000,
-        //       hideProgressBar: false,
-        //       closeOnClick: true,
-        //       pauseOnHover: true,
-        //       draggable: true,
-        //       progress: undefined,
-        //       theme: "light",
-        //     });
-        //     return;
-        //   }
-      }
-      // if (session?.data) {
-      //   if (
-      //     data?.username !== sessionUser?.name ||
-      //     data?.email !== sessionUser?.email
-      //   ) {
-      //     toast.error("use google email and name", {
-      //       position: "top-right",
-      //       autoClose: 5000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       theme: "light",
-      //     });
-      //     return;
-      //   }
-      // }
+      // if (user) {
       const requestData = {
         username: customerDetails?.username,
         first_name: customerDetails?.first_name || data?.first_name,
@@ -150,7 +99,7 @@ const AccountForm = () => {
           progress: undefined,
           theme: "light",
         });
-        navigate.push("/");
+        navigate.push("/dashboard");
       } else {
         setLoading(true);
         const newUser = await CreateWooCommerceData("wc/v3/customers", {
@@ -171,7 +120,7 @@ const AccountForm = () => {
           progress: undefined,
           theme: "light",
         });
-        navigate.push("/");
+        navigate.push("/dashboard");
       }
       reset();
     } catch (error) {
@@ -194,8 +143,6 @@ const AccountForm = () => {
   async function uploadImageOnServer() {
     try {
       const userFromLocal = JSON.parse(localStorage.getItem("user"));
-
-      // console.log(userFromLocal.user._id, "userid");
       if (!file) {
         toast.error("Please select the image to upload", {
           position: "top-right",
@@ -213,10 +160,6 @@ const AccountForm = () => {
       formData.append("file", file);
       formData.append("id", userFromLocal.user._id);
       uploadTheImage(formData);
-
-      // localStorage.setItem("profile", user?.user?.img);
-
-      // console.log(res, "res");
     } catch (error) {
       toast.error("Failed to upload image", {
         position: "top-right",
@@ -237,7 +180,6 @@ const AccountForm = () => {
   }, []);
   useEffect(() => {
     if (isSuccess) {
-      // console.log(data, "profileData");
       localStorage.setItem("user", JSON.stringify(data));
       setSidebarImage(true);
       toast.success("Image upload successfully", {
@@ -264,7 +206,7 @@ const AccountForm = () => {
       });
     };
   }, []);
-  // console.log(session?.data?.user?.image, "session");
+
   return (
     <>
       <main className="mt-[3vw] lg:mt-[1vw]">
