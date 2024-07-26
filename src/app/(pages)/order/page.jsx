@@ -77,8 +77,8 @@ const Page = () => {
         <div className="p-[2vw] bg-white border-[1px] border-[#F5F5F5] mt-[1vw] translate-y-[15vw] sm:translate-y-[7vw] lg:translate-y-0 rounded-lg flex flex-col lg:gap-[0vw] gap-[4vw]">
           {loading ? (
             <Loading h={10} w={10} />
-          ) : (
-            data.map((order, index) => (
+          ) : data && data.length > 0 ? (
+            data?.map((order, index) => (
               <React.Fragment key={index}>
                 <div className="flex mt-[1vw] lg:gap-[0vw] gap-[3vw]">
                   <figure className="w-full max-w-[20vw] lg:max-w-[4vw] sm:max-w-[10vw]">
@@ -129,6 +129,10 @@ const Page = () => {
                 )}
               </React.Fragment>
             ))
+          ) : (
+            <p className="text-[#FF387A] text-center font-bold lg:text-[1.5vw] text-[1.5vw] sm:text-[2vw]">
+              No Orders
+            </p>
           )}
         </div>
       </section>

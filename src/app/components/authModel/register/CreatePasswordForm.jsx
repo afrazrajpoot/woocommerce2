@@ -13,6 +13,7 @@ const CreatePasswordForm = () => {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -21,12 +22,26 @@ const CreatePasswordForm = () => {
     useUpdatePasswordMutation();
 
   const onSubmit = async (data) => {
-    const formData = {
-      oldPassword: data?.oldPassword,
-      id: id,
-      newPassword: data?.newPassword,
-    };
-    await updatePassword(formData);
+    try {
+      const formData = {
+        oldPassword: data?.oldPassword,
+        id: id,
+        newPassword: data?.newPassword,
+      };
+      await updatePassword(formData);
+      reset();
+    } catch (err) {
+      toast.error("Failed to update password", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   useEffect(() => {
@@ -113,7 +128,7 @@ const CreatePasswordForm = () => {
             size="large"
             className="w-full mt-4 text-[3vw] lg:text-[0.8vw] sm:text-[1.5vw] bg-[#FF387A] hover:bg-[#FF387A] text-white"
           >
-            {isLoading ? <Loading  /> : "Save changes"}
+            {isLoading ? <Loading /> : "Save changes"}
           </Button>
         </form>
       </div>

@@ -829,7 +829,7 @@ export const subscriptionPlans = [
   {
     title: "Regular",
     price: "25",
-    available: "1d",
+    available: "Regular",
     features: [
       "5 downloads per day",
       "Access to all products",
@@ -840,7 +840,7 @@ export const subscriptionPlans = [
   {
     title: "Basic",
     price: "120",
-    available: "month",
+    available: "Basic",
     features: [
       "10 downloads per day",
       "Access to all products",
@@ -851,7 +851,7 @@ export const subscriptionPlans = [
   {
     title: "Pro",
     price: "320",
-    available: "year",
+    available: "Premium",
     features: [
       "Unlimited downloads per day",
       "Access to all products",

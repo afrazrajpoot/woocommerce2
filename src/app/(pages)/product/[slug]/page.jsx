@@ -16,6 +16,7 @@ import { extractContent } from "@/app/utils/extractContent";
 import Loading from "@/app/components/Common/Loading";
 import { toast } from "sonner";
 import {
+  useDeleteSubscriptionMutation,
   useGetDataByIdMutation,
   useUpdateSubscriptionMutation,
 } from "@/store/storeApi";
@@ -44,10 +45,13 @@ const ProductDetails = ({ params: { slug } }) => {
   const [loading, setLoading] = useState(false);
   const [getSubscriptionData, { isError, isLoading, data: subscriptionData }] =
     useGetDataByIdMutation();
+
   const [
     updateLimit,
     { isError: limitError, isLoading: limitLoading, data: limitData },
   ] = useUpdateSubscriptionMutation();
+  const [deleteSubscription, { isError: subscriptionError }] =
+    useDeleteSubscriptionMutation();
   useEffect(() => {
     const calculateSubtotal = () => {
       let total = 0;
@@ -231,7 +235,7 @@ const ProductDetails = ({ params: { slug } }) => {
     const res = await getSubscriptionData({ id: id });
     const limit = res.data?.subscription?.downloadLimit;
     const lastDate = res.data?.subscription?.endDate;
-
+    // console.log(res, "my user response");
     await updateLimit(id);
     if (limit <= 0) {
       toast.error("No more downloads available please get subscription pack", {
@@ -240,6 +244,7 @@ const ProductDetails = ({ params: { slug } }) => {
       return;
     }
     if (lastDate > new Date()) {
+      deleteSubscription(id);
       toast.error("Your subscription is expired", {
         position: "top-right",
       });
@@ -248,12 +253,10 @@ const ProductDetails = ({ params: { slug } }) => {
 
     createSubscriptionOrder();
 
-    if (createSubscriptionOrder()) {
-      toast.success("Order create successfully", {
-        position: "top-right",
-      });
-      navigate.push("/downloads");
-    }
+    toast.success("Order create successfully", {
+      position: "top-right",
+    });
+    navigate.push("/downloads");
   }
 
   return (
