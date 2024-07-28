@@ -3,16 +3,13 @@
 import { useGlobalContext } from "@/context/globalState";
 import { accountForm2, accoutForm } from "@/data/data";
 import { Avatar, Button } from "@mui/material";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-// import Loading from "../../Common/Loading";
-import { useUploadImageMutation } from "@/store/storeApi";
+import { useUpdateCustomerIDMutation, useUploadImageMutation } from "@/store/storeApi";
 import Loading from "../../Common/Loading";
-import { StarRateOutlined } from "@mui/icons-material";
 
 const FormInput = ({ label, type, name, value, onChange }) => {
   return (
@@ -47,11 +44,12 @@ const AccountForm = () => {
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const [uploadTheImage, { isLoading, isSuccess, data }] = useUploadImageMutation();
+  const [updateCustomerId] = useUpdateCustomerIDMutation();
   const [googleImage, setGoogleImage] = useState("");
   const { handleSubmit, control, formState: { errors }, reset } = useForm({
     defaultValues: {
-      username: loggedUser?.fullName || customerDetails?.username || "",
-      email: loggedUser?.email || customerDetails?.email || "",
+      username: loggedUser?.fullName || customerDetails?.username || session.data?.user?.name || "",
+      email: loggedUser?.email || customerDetails?.email || session.data?.user?.email || "",
       phone: customerDetails?.phone || "",
       address1: customerDetails?.address1 || "",
       city: customerDetails?.city || "",
@@ -69,7 +67,6 @@ const AccountForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // if (user) {
       const requestData = {
         username: customerDetails?.username,
         first_name: customerDetails?.first_name || data?.first_name,
@@ -106,6 +103,10 @@ const AccountForm = () => {
           ...requestData,
           password: "12345678", // Set a default password for new customers
         });
+// update customerid
+        if(newUser?.id){
+          await updateCustomerId({email: loggedUser?.email, customerId: newUser?.id});
+        }
 
         localStorage.setItem("customerID", JSON.stringify(newUser?.id));
         setCustomerID(newUser?.id);

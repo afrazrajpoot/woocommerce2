@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
-import Form from "../../Common/Footer/Form";
+import Form from "./RegisterForm";
 import Image from "next/image";
 import { useGlobalContext } from "@/context/globalState";
 import { signIn, signOut, useSession } from "next-auth/react";

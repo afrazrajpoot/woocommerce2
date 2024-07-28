@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { SessionProvider } from "next-auth/react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -23,6 +22,7 @@ export const UserProvider = ({ children }) => {
     setLogin(false);
     setLoginModel(false);
   }
+
   const navigate = useRouter();
   const [limit, setLimit] = useState(5);
   const [logedUsername, setLogedUsername] = useState(null);
@@ -42,24 +42,14 @@ export const UserProvider = ({ children }) => {
   const [active, setActive] = useState(false);
   const [isActiveSubscription, setIsActiveSubscription] = useState(false);
   const [dataForResetPassword, setDataForResetPassword] = useState({
-    oldPassword: "",
-    email: "",
-    otp: "",
-    newPassword: "",
+    oldPassword: "", email: "", otp: "", newPassword: "",
   });
   const [state, setState] = useState(false);
   const [cartDetail, setCartDetail] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({
-    username: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    date_created: "",
-    postcode: "",
-    phone: "",
-    address1: "",
-    city: "",
-    country: "",
+    username: "", first_name: "", last_name: "", email: "",
+    date_created: "", postcode: "", phone: "",
+    address1: "", city: "", country: "",
   });
   const [customerID, setCustomerID] = useState(null);
   const [loggedUser, setLoggedUser] = useState(null);
@@ -117,7 +107,7 @@ export const UserProvider = ({ children }) => {
   };
   useEffect(() => {
     const customerID = localStorage.getItem("customerID");
-    if (customerID) {
+    if (customerID && customerID !== "null" && customerID !== "undefined") {
       setCustomerID(customerID);
       fetchWooCommerceData(`wc/v3/customers/${customerID}`).then((data) => {
         setCustomerDetails({
@@ -179,63 +169,16 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
-        login,
-        setLogin,
-        openLoginModel,
-        setLoginModel,
-        tokenInLocal,
-        logout,
-        mobileSidebarOpen,
-        toggleSidebar,
-        setMobileSidebarOpen,
-        fetchWooCommerceData,
-        CreateWooCommerceData,
-        updateWooCommerceData,
-        cartCount,
-        setCartCount,
-        loggedUser,
-        setLoggedUser,
-        checkout,
-        productsAddedToCart,
-        setProductsAddedToCart,
-        setCheckout,
-        openCartDrawer,
-        setOpenCartDrawer,
-        openSignupModel,
-        setSignupModel,
-        openForgetModel,
-        setForgetModel,
-        openOtpModel,
-        setOtpModel,
-        openResetModel,
-        setResetModel,
-        otpReset,
-        setOtpReset,
-        customerID,
-        setCustomerID,
-        dataForResetPassword,
-        setDataForResetPassword,
-        customerDetails,
-        setCustomerDetails,
-        dataForResetPassword,
-        setDataForResetPassword,
-        cart,
-        showCart,
-
-        logedUsername,
-        setLogedUsername,
-        selectedPlan,
-        setSelectedPlan,
-        limit,
-        setLimit,
-        state,
-        setState,
-        cartDetail,
-        setCartDetail,
-        siderbarImage,
-        setSidebarImage,
-        active,
-        setActive, isActiveSubscription, setIsActiveSubscription
+        login, setLogin, openLoginModel, setLoginModel, tokenInLocal, logout, mobileSidebarOpen,
+        toggleSidebar, setMobileSidebarOpen, fetchWooCommerceData, CreateWooCommerceData, updateWooCommerceData,
+        setCartCount, loggedUser, setLoggedUser, checkout, productsAddedToCart,cartCount,
+        setProductsAddedToCart, setCheckout, openCartDrawer, setOpenCartDrawer, openSignupModel,
+        setSignupModel, openForgetModel, setForgetModel, openOtpModel, setOtpModel, openResetModel,
+        setResetModel, otpReset, setOtpReset, customerID, setCustomerID, dataForResetPassword,
+        setDataForResetPassword, customerDetails, setCustomerDetails, dataForResetPassword, setDataForResetPassword, 
+        logedUsername, setLogedUsername, selectedPlan, setSelectedPlan, limit, setLimit, state,
+        setState, cartDetail, setCartDetail, siderbarImage, setSidebarImage, active,
+        setActive, isActiveSubscription, setIsActiveSubscription, cart, showCart,
       }}
     >
       {children}

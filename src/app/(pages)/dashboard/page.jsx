@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import Loading from "@/app/components/Common/Loading";
+import { Avatar } from "@mui/material";
 
 const OrderDetails = ({ image, title, price, onClick }) => {
   return (
@@ -32,17 +33,14 @@ const OrderDetails = ({ image, title, price, onClick }) => {
 
 const page = () => {
   const {
-    customerDetails,
-    setCustomerDetails,
-    fetchWooCommerceData,
-    customerID,
-    imediatelyUpdateDownload,
+    customerDetails, fetchWooCommerceData, customerID, imediatelyUpdateDownload, siderbarImage
   } = useGlobalContext();
   const [data, setData] = useState([]); // Initialize as an empty array
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState();
+
 
   const fetchData = async () => {
     try {
@@ -90,6 +88,21 @@ const page = () => {
   useEffect(() => {
     fetchData();
   }, [customerID, imediatelyUpdateDownload]);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    setImage(userData?.user?.img);
+  }, [siderbarImage]);
+
+  // console.log(image, "my");
+
+
+       
+
+
+
+
+
   return (
     <main className="bg-[#FAFAFA] h-[110vh] sm:h-[270vh] lg:h-[110vh]">
       <Sidebar />
@@ -103,11 +116,13 @@ const page = () => {
         lg:translate-y-0 rounded-lg w-[90vw] lg:ml-[0vw] lg:w-[25vw] ml-[1-2vw]"
           >
             <div className="flex flex-col items-center lg:gap-[1vw] ">
+              <Avatar className="w-[16vw] h-[16vw] sm:w-[12vw] sm:h-[12vw] lg:w-[6vw] lg:h-[6vw]">
               <img
-                src="/img/accountAvatar.png"
+                src={image ? image : "/img/accountAvatar.png"}
                 alt="dashborad photo"
-                className="w-full lg:max-w-[5vw] max-w-[20vw] sm:max-w-[9vw]"
+                className="w-full"
               />
+              </Avatar>
               <div>
                 <p className="text-center font-bold lg:text-[1vw] text-[4vw] sm:text-[2.5vw]">
                   {customerDetails?.username}
@@ -167,7 +182,7 @@ const page = () => {
             </aside>
             <div className="flex gap-[3vw] lg:items-center justify-center lg:mt-[1vw] mt-[3vw]">
               <Link href="/accountdetails">
-                <button className="text-[#FF387A] font-bold lg:text-[1vw] text-[3.5vw] sm:text-[2vw]">
+                <button className="text-[#FF387A] hover:text-[#ff387af3] font-bold lg:text-[1vw] text-[3.5vw] sm:text-[2vw]">
                   change password
                 </button>
               </Link>

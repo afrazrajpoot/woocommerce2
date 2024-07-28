@@ -21,6 +21,7 @@ import {
   useUpdateSubscriptionMutation,
 } from "@/store/storeApi";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const ProductDetails = ({ params: { slug } }) => {
   const [productDetails, setProductDetails] = useState(null);
@@ -220,9 +221,12 @@ const ProductDetails = ({ params: { slug } }) => {
 
   async function hanldeSubscription() {
     setLoading(true);
-    const res = await getSubscriptionData({ id: id });
  try {
-  if (!res.data?.subscription) {
+  let res;
+  if(id !== "null" && id !== "undefined"){
+    res = await getSubscriptionData({ id: id });
+  }
+  if (!res?.data?.subscription) {
     toast.error("Please get subscription", {
       position: "top-right",
     });
@@ -461,16 +465,18 @@ const ProductDetails = ({ params: { slug } }) => {
               with any aspect ratio in the frame, such as portrait 9:16
             </p>
             {extractedContent.images?.length > 2 ? (
-              <>
-                {extractedContent?.images?.slice(1)?.map((image, i) => (
-                  <Image
-                    key={i}
-                    src={image?.src}
-                    width={1000}
-                    height={1000}
-                    alt="store details"
-                    className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-                  />
+                <>
+                {extractedContent.images.slice(1).map((image, i) => (
+                  image?.src && (
+                    <Image
+                      key={i}
+                      src={image.src}
+                      width={1000}
+                      height={1000}
+                      alt="store details"
+                      className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
+                    />
+                  )
                 ))}
               </>
             ) : (
@@ -526,17 +532,17 @@ const ProductDetails = ({ params: { slug } }) => {
           <div className="grid grid-cols-1 gap-[2vw] w-full">
             <Slider {...settings}>
               {relatedProducts?.map((product, index) => {
-                const { regular_price, sale_price, name } =
+                const { regular_price, sale_price, name , slug} =
                   product?.data;
                 return (
-                  <div key={index} className="w-full">
+                  <Link href={`/product/${slug}`} key={index} className="w-full block">
                     <Pack
                       discountedPrice={sale_price}
                       actualPrice={regular_price}
                       image={product?.data?.images?.[0]?.src}
                       title={name}
                     />
-                  </div>
+                  </Link>
                 );
               })}
             </Slider>

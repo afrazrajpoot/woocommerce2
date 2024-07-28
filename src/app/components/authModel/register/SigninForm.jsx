@@ -40,6 +40,8 @@ const SigninForm = () => {
     try {
       const res = await login(formData);
       setLogedUsername(res.data.user.fullName);
+      localStorage.setItem("customerID", JSON.stringify(res.data.user?.customerId));
+      localStorage.setItem("subscriptionId", JSON.stringify(res?.data?.subscriptionId));
     } catch (error) {
       toast.error("Failed to login", {
         position: "top-right",

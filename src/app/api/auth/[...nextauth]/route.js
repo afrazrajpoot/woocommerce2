@@ -1,5 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import User from "@/models/userModel";
+import { connection } from '@/dbConfig/dbConfig'; // Ensure you have the proper connection setup
+import { writeFile } from "fs/promises";
+import path from "path";
+
+
+connection();
 
 const handler = NextAuth({
   providers: [
@@ -16,13 +23,24 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user }) {
       try {
-        // console.log(user, "user google");
-        // Handle sign-in logic here
+        const { name, email, image } = user;
+        // Check if the user already exists in the database
+        const existingUser = await User.findOne({ email: email });
+        if (!existingUser) {
+          const newUser = new User({
+            fullName: name,
+            email: email,
+            img: image,
+          });
+          await newUser.save();
+        } else {
+          console.log('User already exists:', existingUser);
+        }
         return true;
       } catch (error) {
-        console.error("Error during sign-in:", error);
+        console.error('Error during sign-in:', error);
         return false;
       }
     },

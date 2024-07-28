@@ -5,7 +5,6 @@ import {
   Radio,
   IconButton,
   InputAdornment,
-  Snackbar,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
@@ -13,25 +12,14 @@ import { formData } from "@/data/data";
 import { useSignupUserMutation } from "@/store/storeApi";
 import { useGlobalContext } from "@/context/globalState";
 import { Toaster, toast } from "sonner";
-import { useRouter } from "next/navigation";
-import SignupModel from "../../authModel/register/SignupModel";
-import Loading from "../Loading";
+import Loading from "../../Common/Loading";
 
-const Form = () => {
-  const [register, { isLoading, isError, data, isSuccess }] =
-    useSignupUserMutation();
+const RegisterForm = () => {
+  const [register, { isLoading, isError, data, isSuccess }] =  useSignupUserMutation();
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm();
-  const { setSignupModel, customerID, setLoginModel } = useGlobalContext();
+  const { handleSubmit, control, formState: { errors },} = useForm();
+  const { setSignupModel, setLoginModel } = useGlobalContext();
   const [showPassword, setShowPassword] = useState(false);
-  // const [successMessage, setSuccessMessage] = useState("");
-  // const [openSnackbar, setOpenSnackbar] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const onSubmit = async (formData) => {
@@ -55,13 +43,8 @@ const Form = () => {
     }
   };
 
-  const handleSnackbarClose = () => {
-    setOpenSnackbar(false);
-  };
   useEffect(() => {
     if (isSuccess) {
-      // localStorage.setItem('userId', data?.data?.id);
-      // console.log(data.user._id, "data signup");
       localStorage.setItem("userId", JSON.stringify(data.user._id));
       toast.success("Signup successful!", {
         position: "top-right",
@@ -164,4 +147,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default RegisterForm;

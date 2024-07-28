@@ -29,8 +29,10 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const page = () => {
-  const [id, setId] = useState();
-  const { data, isLoading } = useGetSubscriptionDataByIdQuery(id);
+  const [id, setId] = useState(null); // Initialize with null
+  const { data, isLoading } = useGetSubscriptionDataByIdQuery(id, {
+    skip: !id,
+  });
 
   const startDate = new Date(data?.subscription?.startDate);
   const formattedTime = startDate.toLocaleTimeString([], {
@@ -92,7 +94,9 @@ const page = () => {
   };
   useEffect(() => {
     const userId = localStorage.getItem("subscriptionId");
-    setId(userId);
+    if (userId) {
+      setId(userId);
+    }  
   }, []);
 
   return (

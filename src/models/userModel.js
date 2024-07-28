@@ -4,20 +4,23 @@ const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
-      required: true,
     },
     password: {
       type: String,
-      required: true,
     },
     otp: {
       type: String,
     },
     img: {
+      type: String,
+    },
+    customerId: {
+      type: String,
+    },
+    subscriptionId: {
       type: String,
     },
   },

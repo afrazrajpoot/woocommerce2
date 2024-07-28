@@ -38,8 +38,10 @@ const Page = () => {
   const [id, setId] = useState(null);
   const [setSubscription, { isError, isLoading, data, isSuccess }] =
     useSubmitSubscriptionMutation();
-  const { selectedPlan, customerID, customerDetails } = useGlobalContext();
+  const { selectedPlan, customerID, customerDetails, loggedUser } = useGlobalContext();
   const [successPayment, setSuccessPayment] = useState(false);
+  const [updateCustomerId] = useUpdateCustomerIDMutation();
+
 
   const handleRadioChange = (event) => {
     setSelectedPayment(event.target.value);
@@ -153,7 +155,6 @@ const Page = () => {
                 progress: undefined,
                 theme: "light",
               });
-              // console.error("Payment error:", err);
             },
           })
           .render("#paypal-button-container");
@@ -197,14 +198,12 @@ const Page = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      // console.log(data.subscription._id, "myData");
       localStorage.setItem("subscriptionId", data?.subscription?._id);
+      updateCustomerId({email: loggedUser?.email, customerId: loggedUser?.customerId, subscriptionId: data?.subscription?._id });
     }
     const id = JSON.parse(localStorage.getItem("user"));
-    // console.log(id.user._id, "user");
     setId(id?.user?._id);
   }, [isSuccess]);
-  // console.log(data?.subscription?._id, "subsdata");
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">
       <section className="lg:translate-y-[5vw] sm:translate-y-[10vw] translate-y-[20vw] p-[2vw] w-full max-w-[90vw] m-auto">

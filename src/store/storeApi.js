@@ -69,6 +69,13 @@ export const storeApi = createApi({
         method: "PUT",
       }),
     }),
+    updateCustomerID: builder.mutation({
+      query: (data) => ({
+        url: `/api/user/updateCustomerId`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
     getSubscriptionDataById: builder.query({
       query: (id) => ({
         url: `/api/subscription/${id}`,
@@ -95,4 +102,5 @@ export const {
   useUploadImageMutation,
   useDeleteSubscriptionMutation,
   useGetSubscriptionDataByIdQuery,
+  useUpdateCustomerIDMutation,
 } = storeApi;

@@ -16,6 +16,10 @@ const Sidebar = () => {
   function handleLogout() {
     if (session.data) {
       signOut("google");
+      // custom login details
+      localStorage.removeItem("user");
+      localStorage.removeItem("customerID");
+      localStorage.removeItem("subscriptionId");
       navigate.push("/");
       return;
     }
@@ -28,7 +32,6 @@ const Sidebar = () => {
     setImage(userData?.user?.img);
   }, [siderbarImage]);
 
-  // console.log(image, "my");
 
   return (
     <aside className="fixed translate-x-[5vw] top-[3vw] hidden lg:block overflow-y-auto h-screen w-full max-w-[20vw] lg:max-w-[17vw] bg-white border-[1px] border-[#F1F5F9]">
