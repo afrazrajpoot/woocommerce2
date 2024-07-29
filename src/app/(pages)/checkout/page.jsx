@@ -26,6 +26,8 @@ const page = () => {
     active,
     setActive,
   } = useGlobalContext();
+  const [paypalButtonRendered, setPaypalButtonRendered] = useState(false);
+
   const fetchOrder = async (data) => {
     try {
       const response = await CreateWooCommerceData(`wc/v3/orders`, data);
@@ -55,6 +57,9 @@ const page = () => {
   }
 
   async function paymentMethod() {
+    if (paypalButtonRendered) {
+      return;
+    }
     loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
       (paypal) => {
         paypal
@@ -220,6 +225,7 @@ const page = () => {
             },
           })
           .render("#paypal-button-container");
+        setPaypalButtonRendered(true);
       }
     );
   }
@@ -240,7 +246,6 @@ const page = () => {
     });
     navigate.push("/accountdetails");
   };
-
 
   useEffect(() => {
     if (navigation) {

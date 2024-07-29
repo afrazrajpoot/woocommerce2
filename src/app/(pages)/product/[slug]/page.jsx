@@ -29,13 +29,22 @@ const ProductDetails = ({ params: { slug } }) => {
   const [id, setId] = useState(0);
 
   const {
-    fetchWooCommerceData, setCartCount, showCart, productsAddedToCart, setProductsAddedToCart,
-    customerDetails, CreateWooCommerceData, customerID, login, setCartDetail, isActiveSubscription
+    fetchWooCommerceData,
+    setCartCount,
+    showCart,
+    productsAddedToCart,
+    setProductsAddedToCart,
+    customerDetails,
+    CreateWooCommerceData,
+    customerID,
+    login,
+    setCartDetail,
+    isActiveSubscription,
   } = useGlobalContext();
   const [subTotal, setSubtotal] = React.useState(0);
   const [loading, setLoading] = useState(false);
   const [getSubscriptionData] = useGetDataByIdMutation();
-  const [ updateLimit] = useUpdateSubscriptionMutation();
+  const [updateLimit] = useUpdateSubscriptionMutation();
   const [deleteSubscription] = useDeleteSubscriptionMutation();
 
   useEffect(() => {
@@ -116,8 +125,12 @@ const ProductDetails = ({ params: { slug } }) => {
   const mainVideo = extractContent(productDetails?.short_description);
 
   const settings = {
-    dots: false, infinite: true, speed: 500, arrows: true,
-    slidesToShow: 3,  slidesToScroll: 1,
+    dots: false,
+    infinite: true,
+    speed: 500,
+    arrows: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
     responsive: [
       {
         breakpoint: 1024,
@@ -198,13 +211,12 @@ const ProductDetails = ({ params: { slug } }) => {
   }
 
   async function handleLoginCheckout() {
-    if(!login){
+    if (!login) {
       toast.error("Please login first", {
         position: "top-right",
       });
-      return
-    }
-   else if (!customerDetails) {
+      return;
+    } else if (!customerDetails) {
       toast.error("Please login first", {
         position: "top-right",
       });
@@ -221,46 +233,49 @@ const ProductDetails = ({ params: { slug } }) => {
 
   async function hanldeSubscription() {
     setLoading(true);
- try {
-  let res;
-  if(id !== "null" && id !== "undefined"){
-    res = await getSubscriptionData({ id: id });
-  }
-  if (!res?.data?.subscription) {
-    toast.error("Please get subscription", {
-      position: "top-right",
-    });
-    return;
-  }
-  const limit = res.data?.subscription?.downloadLimit;
-  const lastDate = res.data?.subscription?.endDate;
-  await updateLimit(id);
-  if (limit <= 0) {
-    toast.error("No more downloads available please get subscription pack", {
-      position: "top-right",
-    });
-    return;
-  }
-  if (lastDate > new Date()) {
-    deleteSubscription(id);
-    toast.error("Your subscription is expired", {
-      position: "top-right",
-    });
-    return;
-  }
+    try {
+      let res;
+      if (id !== "null" && id !== "undefined") {
+        res = await getSubscriptionData({ id: id });
+      }
+      if (!res?.data?.subscription) {
+        toast.error("Please get subscription", {
+          position: "top-right",
+        });
+        return;
+      }
+      const limit = res.data?.subscription?.downloadLimit;
+      const lastDate = res.data?.subscription?.endDate;
+      await updateLimit(id);
+      if (limit <= 0) {
+        toast.error(
+          "No more downloads available please get subscription pack",
+          {
+            position: "top-right",
+          }
+        );
+        return;
+      }
+      if (lastDate > new Date()) {
+        deleteSubscription(id);
+        toast.error("Your subscription is expired", {
+          position: "top-right",
+        });
+        return;
+      }
 
-  createSubscriptionOrder();
-  toast.success("Order create successfully", {
-    position: "top-right",
-  });
- } catch (error) {
-  toast.error("Please try again later", {
-    position: "top-right",
-  })
- } finally {
-  setLoading(false);
-  navigate.push("/downloads");
- }
+      createSubscriptionOrder();
+      toast.success("Order create successfully", {
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error("Please try again later", {
+        position: "top-right",
+      });
+    } finally {
+      setLoading(false);
+      navigate.push("/downloads");
+    }
   }
 
   return (
@@ -337,10 +352,10 @@ const ProductDetails = ({ params: { slug } }) => {
                       if (!login || !customerID) {
                         handleLoginCheckout();
                         return;
-                      }else{
+                      } else {
                         addToCartHandler(productDetails);
-                      setCartDetail(false);
-                      navigate.push("/checkout");
+                        setCartDetail(false);
+                        navigate.push("/checkout");
                       }
                     }}
                     variant="contained"
@@ -412,7 +427,11 @@ const ProductDetails = ({ params: { slug } }) => {
             <main className="flex flex-col lg:flex-col lg:gap-[5vw] items-start justify-evenly w-full">
               {extractedContent?.videos?.slice(0, 2).map((video, index) => (
                 <main key={index} className="w-full">
-                  <h1 className="text-[#171717] mb-[0.5vw] text-[5vw] md:text-[2vw] font-medium">{index == 0 ? "Related Video" : "All Templates (Promo Videos)"}</h1>
+                  <h1 className="text-[#171717] mb-[0.5vw] text-[5vw] md:text-[2vw] font-medium">
+                    {index == 0
+                      ? "Related Video"
+                      : "All Templates (Promo Videos)"}
+                  </h1>
                   <iframe
                     className="rounded-[0.8vw] mt-[8vw] lg:mt-0 w-full max-w-[90vw] h-[60vw] sm:h-[50vw] lg:h-[25vw] sm:max-w-[85vw] lg:max-w-[41vw]"
                     key={index}
@@ -465,19 +484,22 @@ const ProductDetails = ({ params: { slug } }) => {
               with any aspect ratio in the frame, such as portrait 9:16
             </p>
             {extractedContent.images?.length > 2 ? (
-                <>
-                {extractedContent.images.slice(1).map((image, i) => (
-                  image?.src && (
-                    <Image
-                      key={i}
-                      src={image.src}
-                      width={1000}
-                      height={1000}
-                      alt="store details"
-                      className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
-                    />
-                  )
-                ))}
+              <>
+                {extractedContent.images
+                  .slice(1)
+                  .map(
+                    (image, i) =>
+                      image?.src && (
+                        <Image
+                          key={i}
+                          src={image.src}
+                          width={1000}
+                          height={1000}
+                          alt="store details"
+                          className="mt-[10vw] sm:mt-[6vw] lg:mt-[3vw]"
+                        />
+                      )
+                  )}
               </>
             ) : (
               <>
@@ -532,15 +554,19 @@ const ProductDetails = ({ params: { slug } }) => {
           <div className="grid grid-cols-1 gap-[2vw] w-full">
             <Slider {...settings}>
               {relatedProducts?.map((product, index) => {
-                const { regular_price, sale_price, name , slug} =
-                  product?.data;
+                // const { regular_price, sale_price, name , slug} =
+                //   product?.data;
                 return (
-                  <Link href={`/product/${slug}`} key={index} className="w-full block">
+                  <Link
+                    href={`/product/${product?.data?.slug}`}
+                    key={index}
+                    className="w-full block"
+                  >
                     <Pack
-                      discountedPrice={sale_price}
-                      actualPrice={regular_price}
+                      discountedPrice={product?.data?.sale_price}
+                      actualPrice={product?.data?.regular_price}
                       image={product?.data?.images?.[0]?.src}
-                      title={name}
+                      title={product?.data?.name}
                     />
                   </Link>
                 );

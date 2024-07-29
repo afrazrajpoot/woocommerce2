@@ -10,7 +10,7 @@ export async function POST(req) {
     await req.json();
   // console.log(username, email, price, available, userId, "userdetail");
   const subscription = new Subscription({
-    userId: userId,
+    // userId: userId,
     username: username, // Replace with actual username
     email: email, // Replace with actual email
     startDate: new Date(), // Current date as start date

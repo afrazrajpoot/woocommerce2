@@ -11,7 +11,7 @@ export async function GET(req, { params }) {
       );
     }
 
-    const subscription = await Subscription.findById(id)
+    const subscription = await Subscription.findById(id);
 
     console.log("Found subscription:", subscription);
 

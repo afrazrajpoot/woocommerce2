@@ -7,15 +7,29 @@ import { toast } from "sonner";
 
 const SubscriptionPlans = () => {
   const navigate = useRouter();
-  const { selectedPlan, setSelectedPlan, setActive, login } = useGlobalContext();
+  const {
+    selectedPlan,
+    setSelectedPlan,
+    setActive,
+    login,
+    customerID,
+    customerDetails,
+  } = useGlobalContext();
 
   const handlePlanSelect = (index, price, features, available) => {
-    if (!login) {
+    if (!customerDetails) {
       toast.error("Please login first", {
         position: "top-right",
       });
       return;
+    } else if (!customerID && customerID === undefined) {
+      toast.error("Please register yourself as a customer", {
+        position: "top-right",
+      });
+      navigate.push("/accountdetails");
+      return;
     }
+
     const newSelectedPlan = { index, price, features, available };
     setSelectedPlan(newSelectedPlan);
     setActive(true);

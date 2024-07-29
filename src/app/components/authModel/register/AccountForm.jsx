@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useUpdateCustomerIDMutation, useUploadImageMutation } from "@/store/storeApi";
+import {
+  useUpdateCustomerIDMutation,
+  useUploadImageMutation,
+} from "@/store/storeApi";
 import Loading from "../../Common/Loading";
 
 const FormInput = ({ label, type, name, value, onChange }) => {
@@ -39,17 +42,38 @@ const AccountForm = () => {
   const [url, imgUrl] = useState("");
   const [profileImage, setProfileImage] = useState(false);
   const navigate = useRouter();
-  const { CreateWooCommerceData, updateWooCommerceData, loggedUser, customerDetails, 
-   customerID, setCustomerID, setSidebarImage,setCustomerDetails
+  const {
+    CreateWooCommerceData,
+    updateWooCommerceData,
+    loggedUser,
+    customerDetails,
+    customerID,
+    setCustomerID,
+    setSidebarImage,
+    setCustomerDetails,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  const [uploadTheImage, { isLoading, isSuccess, data }] = useUploadImageMutation();
+  const [uploadTheImage, { isLoading, isSuccess, data }] =
+    useUploadImageMutation();
   const [updateCustomerId] = useUpdateCustomerIDMutation();
   const [googleImage, setGoogleImage] = useState("");
-  const { handleSubmit, control, formState: { errors }, reset } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
     defaultValues: {
-      username: loggedUser?.fullName || customerDetails?.username || session.data?.user?.name || "",
-      email: loggedUser?.email || customerDetails?.email || session.data?.user?.email || "",
+      username:
+        loggedUser?.fullName ||
+        customerDetails?.username ||
+        session?.data?.user?.name ||
+        "",
+      email:
+        loggedUser?.email ||
+        customerDetails?.email ||
+        session.data?.user?.email ||
+        "",
       phone: customerDetails?.phone || "",
       address1: customerDetails?.address1 || "",
       city: customerDetails?.city || "",
@@ -103,9 +127,12 @@ const AccountForm = () => {
           ...requestData,
           password: "12345678", // Set a default password for new customers
         });
-// update customerid
-        if(newUser?.id){
-          await updateCustomerId({email: loggedUser?.email, customerId: newUser?.id});
+        // update customerid
+        if (newUser?.id) {
+          await updateCustomerId({
+            email: loggedUser?.email,
+            customerId: newUser?.id,
+          });
         }
 
         localStorage.setItem("customerID", JSON.stringify(newUser?.id));
@@ -230,13 +257,17 @@ const AccountForm = () => {
               <Avatar className="w-[5vw] h-[5vw]">
                 {profileImage ? (
                   url ? (
-                    <img src={url} alt="avatar" className="w-full h-full" />
+                    <img
+                      src={url || session?.data?.user?.image}
+                      alt="avatar"
+                      className="w-full h-full"
+                    />
                   ) : (
                     <Avatar>{loggedUser?.fullName[0]}</Avatar>
                   )
                 ) : (
                   <img
-                    src={user?.user?.img}
+                    src={user?.user?.img || session?.data?.user?.image}
                     alt="avatar"
                     className="w-full h-full"
                   />

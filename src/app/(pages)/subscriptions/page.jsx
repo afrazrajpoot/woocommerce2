@@ -66,7 +66,7 @@ const page = () => {
   }
   const handleDownload = () => {
     const doc = new jsPDF();
-  
+
     // Add a title
     doc.setFontSize(18);
     doc.addImage("/img/Logo.png", "PNG", 10, 10, 15, 15);
@@ -82,10 +82,10 @@ const page = () => {
     const lineSpacing = 10;
     // Add the details
     const details = [
-      `User Name: ${data?.subscription?.username || ''}`,
-      `Price: $${data?.subscription?.price || ''}`,
-      `Plan Type: ${data?.subscription?.planType || ''}`,
-      `Email: ${data?.subscription?.email || ''}`,
+      `User Name: ${data?.subscription?.username || ""}`,
+      `Price: $${data?.subscription?.price || ""}`,
+      `Plan Type: ${data?.subscription?.planType || ""}`,
+      `Email: ${data?.subscription?.email || ""}`,
     ];
     details.forEach((detail, index) => {
       doc.text(detail, startX, startY + index * lineSpacing);
@@ -96,7 +96,7 @@ const page = () => {
     const userId = localStorage.getItem("subscriptionId");
     if (userId) {
       setId(userId);
-    }  
+    }
   }, []);
 
   return (
@@ -137,8 +137,12 @@ const page = () => {
                   <h1 className="lg:text-[1.8vw] text-[4vw] sm:text-[4.5vw] font-semibold text-[#151515]">
                     {isLoading ? (
                       <Loading />
-                    ) : !data?.subscription?.downloadLimit ? 0 : (
+                    ) : !data?.subscription?.downloadLimit ? (
+                      0
+                    ) : data?.subscription?.downloadLimit > 0 ? (
                       data?.subscription?.downloadLimit
+                    ) : (
+                      0
                     )}
                   </h1>
                 </aside>
@@ -148,9 +152,9 @@ const page = () => {
                   </p>
                   <h1 className="lg:text-[1.8vw] text-[4vw] sm:text-[3.5vw] font-semibold text-[#151515]">
                     {data?.subscription?.planType === "Basic"
-                      ? "25"
-                      : data?.subscription?.planType === "Regular"
                       ? "50"
+                      : data?.subscription?.planType === "Regular"
+                      ? "25"
                       : data?.subscription?.planType === "Premium"
                       ? "70"
                       : "0"}
@@ -198,9 +202,9 @@ const page = () => {
               Cancel Plan
             </button>
             <Link href="/" className="w-full block">
-            <button className="hover:bg-[#ED544E] hover:text-white text-center rounded-md w-full text-[#ED544E] bg-white border-[0.1vw] p-[0.5vw] m-[2.5vw] sm:m-[0.5vw] border-[#ED544E]">
-              {!data ? 'Subscribe' : 'Change Plan'}
-            </button>
+              <button className="hover:bg-[#ED544E] hover:text-white text-center rounded-md w-full text-[#ED544E] bg-white border-[0.1vw] p-[0.5vw] m-[2.5vw] sm:m-[0.5vw] border-[#ED544E]">
+                {!data ? "Subscribe" : "Change Plan"}
+              </button>
             </Link>
           </footer>
         </aside>

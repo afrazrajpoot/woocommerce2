@@ -11,8 +11,11 @@ import Profile from "../components/Cards/Profile";
 import Footer from "../components/Common/Footer/Footer";
 import Bundles from "../components/pagesComponents/landingpage/Bundles";
 import InputField from "../components/InputField";
-
+// import { useSession } from "next-auth/react";
+// import { useEffect } from "react";
 const LandingPage = () => {
+  // const session = useSession();
+
   return (
     <main
       style={{ backgroundImage: "url('/img/hero1.png')" }}

@@ -16,11 +16,16 @@ import { toast } from "sonner";
 // import SuccessPaymentModel from "../components/authModel/resetModal/SuccessPaymentModel";
 import SuccessPaymentModel from "@/app/components/authModel/resetModal/SuccessPaymentModel";
 import axios from "axios";
-import { useSubmitSubscriptionMutation } from "@/store/storeApi";
+import {
+  useSubmitSubscriptionMutation,
+  useUpdateCustomerIDMutation,
+} from "@/store/storeApi";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/components/Common/Loading";
 
 const Page = () => {
+  const [paypalButtonRendered, setPaypalButtonRendered] = useState(false);
+  const [successPayment, setSuccessPayment] = useState(false);
   const navigate = useRouter();
   const [loading, setLoading] = useState(false);
   const paymentData = [
@@ -38,10 +43,10 @@ const Page = () => {
   const [id, setId] = useState(null);
   const [setSubscription, { isError, isLoading, data, isSuccess }] =
     useSubmitSubscriptionMutation();
-  const { selectedPlan, customerID, customerDetails, loggedUser } = useGlobalContext();
-  const [successPayment, setSuccessPayment] = useState(false);
+  const { selectedPlan, customerID, customerDetails, loggedUser } =
+    useGlobalContext();
+  // const [successPayment, setSuccessPayment] = useState(false);
   const [updateCustomerId] = useUpdateCustomerIDMutation();
-
 
   const handleRadioChange = (event) => {
     setSelectedPayment(event.target.value);
@@ -70,6 +75,10 @@ const Page = () => {
   };
 
   const paymentMethod = async () => {
+    if (paypalButtonRendered) {
+      return;
+    }
+
     loadScript({ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }).then(
       (paypal) => {
         paypal
@@ -145,7 +154,7 @@ const Page = () => {
               });
             },
             onError: (err) => {
-              toast.error("Payment insufficiant amount 0 ", {
+              toast.error("Payment insufficient amount 0", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -158,9 +167,12 @@ const Page = () => {
             },
           })
           .render("#paypal-button-container");
+
+        setPaypalButtonRendered(true);
       }
     );
   };
+
   const handlePayment = () => {
     setLoading(true);
     if (!id) {
@@ -171,7 +183,7 @@ const Page = () => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: defaultProgress,
+        progress: undefined,
         theme: "light",
       });
       setLoading(false);
@@ -199,10 +211,14 @@ const Page = () => {
   useEffect(() => {
     if (isSuccess) {
       localStorage.setItem("subscriptionId", data?.subscription?._id);
-      updateCustomerId({email: loggedUser?.email, customerId: loggedUser?.customerId, subscriptionId: data?.subscription?._id });
+      updateCustomerId({
+        email: loggedUser?.email,
+        customerId: loggedUser?.customerId,
+        subscriptionId: data?.subscription?._id,
+      });
     }
     const id = JSON.parse(localStorage.getItem("user"));
-    setId(id?.user?._id);
+    setId(id?.user?.email);
   }, [isSuccess]);
   return (
     <main className="bg-[#FAFAFA] lg:h-[200vh] h-[260vh] overflow-x-hidden overflow-y-hidden">

@@ -7,6 +7,7 @@ import { useGlobalContext } from "@/context/globalState";
 import { useResetPasswordMutation } from "@/store/storeApi"; // Adjust import path as needed
 import { toast } from "sonner";
 import Loading from "../../Common/Loading";
+// import Loading from "../../Common/Loading";
 
 const ResetForm = () => {
   const { otpReset, setLoginModel, setResetModel } = useGlobalContext();
@@ -90,7 +91,7 @@ const ResetForm = () => {
         className="w-full mt-4 text-sm bg-[#FF387A] hover:bg-[#FF387A] text-white"
         disabled={isLoading} // Disable button while loading
       >
-        {isLoading ? <Loading  /> : "Next"}
+        {isLoading ? <Loading /> : "Next"}
       </Button>
     </form>
   );

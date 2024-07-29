@@ -40,7 +40,8 @@ const Header = () => {
       setUserName(customerDetails?.username);
     }
     if (session?.user?.name) {
-      setUserName(session.user.name);
+      setUserName(session?.user?.name);
+      localStorage.setItem("user", JSON.stringify(session));
     }
   }, [session]);
 

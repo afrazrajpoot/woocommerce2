@@ -69,6 +69,7 @@ export default function SignupModel() {
 
               <Button
                 variant="outlined"
+                onClick={() => signIn("facebook")}
                 className="w-full lg:max-w-[12vw] max-w-[35vw] flex items-center gap-[4vw] lg:gap-[2vw] border-[1px] border-[#E5E5E5]"
                 style={{
                   backgroundColor: "#FAFAFA",

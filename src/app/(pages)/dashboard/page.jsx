@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import Loading from "@/app/components/Common/Loading";
 import { Avatar } from "@mui/material";
+import { useSession } from "next-auth/react";
 
 const OrderDetails = ({ image, title, price, onClick }) => {
   return (
@@ -33,14 +34,18 @@ const OrderDetails = ({ image, title, price, onClick }) => {
 
 const page = () => {
   const {
-    customerDetails, fetchWooCommerceData, customerID, imediatelyUpdateDownload, siderbarImage
+    customerDetails,
+    fetchWooCommerceData,
+    customerID,
+    imediatelyUpdateDownload,
+    siderbarImage,
   } = useGlobalContext();
+  const session = useSession();
   const [data, setData] = useState([]); // Initialize as an empty array
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState();
-
 
   const fetchData = async () => {
     try {
@@ -96,13 +101,6 @@ const page = () => {
 
   // console.log(image, "my");
 
-
-       
-
-
-
-
-
   return (
     <main className="bg-[#FAFAFA] h-[110vh] sm:h-[270vh] lg:h-[110vh]">
       <Sidebar />
@@ -117,11 +115,17 @@ const page = () => {
           >
             <div className="flex flex-col items-center lg:gap-[1vw] ">
               <Avatar className="w-[16vw] h-[16vw] sm:w-[12vw] sm:h-[12vw] lg:w-[6vw] lg:h-[6vw]">
-              <img
-                src={image ? image : "/img/accountAvatar.png"}
-                alt="dashborad photo"
-                className="w-full"
-              />
+                <img
+                  src={
+                    image
+                      ? image
+                      : session?.data?.user?.image
+                      ? session?.data?.user?.image
+                      : "/img/accountAvatar.png"
+                  }
+                  alt="dashborad photo"
+                  className="w-full"
+                />
               </Avatar>
               <div>
                 <p className="text-center font-bold lg:text-[1vw] text-[4vw] sm:text-[2.5vw]">

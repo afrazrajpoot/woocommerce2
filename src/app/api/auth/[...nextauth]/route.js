@@ -1,10 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 import User from "@/models/userModel";
-import { connection } from '@/dbConfig/dbConfig'; // Ensure you have the proper connection setup
-import { writeFile } from "fs/promises";
-import path from "path";
-
+import { connection } from "@/dbConfig/dbConfig";
 
 connection();
 
@@ -21,11 +19,16 @@ const handler = NextAuth({
         },
       },
     }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
   ],
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, account, profile }) {
       try {
         const { name, email, image } = user;
+        console.log("User signed in:", user);
         // Check if the user already exists in the database
         const existingUser = await User.findOne({ email: email });
         if (!existingUser) {
@@ -36,11 +39,11 @@ const handler = NextAuth({
           });
           await newUser.save();
         } else {
-          console.log('User already exists:', existingUser);
+          console.log("User already exists:", existingUser);
         }
         return true;
       } catch (error) {
-        console.error('Error during sign-in:', error);
+        console.error("Error during sign-in:", error);
         return false;
       }
     },

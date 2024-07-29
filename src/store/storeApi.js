@@ -77,8 +77,8 @@ export const storeApi = createApi({
       }),
     }),
     getSubscriptionDataById: builder.query({
-      query: (id) => ({
-        url: `/api/subscription/${id}`,
+      query: (email) => ({
+        url: `/api/subscription/${email}`,
       }),
     }),
     deleteSubscription: builder.mutation({
